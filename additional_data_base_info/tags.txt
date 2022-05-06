@@ -3,6 +3,7 @@ angels
 vampires
 wolves
 werewolves
+ghosts
 guns
 war
 magic
@@ -16,6 +17,8 @@ dance
 gore
 mafia
 sex
+first_love
+cheating
 archery
 amnesia
 violence
@@ -32,3 +35,11 @@ demi-gods
 time_travel
 ancient_greece
 ancient_egypt
+greek_mythology
+chinese_mythology
+nordic_mythology
+egyptian_mythology
+vikings
+hero
+superhero
+time_travel
