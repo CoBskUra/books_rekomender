@@ -1,0 +1,37 @@
+version: '3.4'
+
+services:
+  wsidatabase:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+        SA_PASSWORD: "DevPassword1!"
+        ACCEPT_EULA: "Y"
+    ports: 
+     - "50001:1433"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    networks:
+      - bookrecommendersnetwork
+    volumes:
+      - dbwsivolume:/var/opt/mssql
+  bookwebapp:
+    image: ${DOCKER_REGISTRY-}webapp
+    ports: 
+    - "50002:443"
+    - "50003:80"
+    build:
+      context: ./WebApp
+      dockerfile: ./BooksRecommender/Dockerfile
+    depends_on:
+        - wsidatabase
+    networks:
+      - bookrecommendersnetwork
+networks:
+  bookrecommendersnetwork:
+    driver: bridge
+
+volumes:
+  dbwsivolume:
