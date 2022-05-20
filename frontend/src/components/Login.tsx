@@ -25,7 +25,7 @@ export default function Login(props : Props) {
         dispatch({ type: 'SET_TOKEN', payload: token });
         dispatch({ type: 'SET_USER', payload: user.email });
         message.success('Logged in succesfully!');
-        navigate('/home', {replace: true});
+        navigate('/books', {replace: true});
     }
 
     const loginHandler = (user : any) => {
@@ -43,7 +43,7 @@ export default function Login(props : Props) {
 
     return (
         <div>
-            <Row justify="space-around" align="middle" style={{minHeight: "70vh" }}>
+            <Row justify="space-around" align="middle" style={{minHeight: "81vh" }}>
                 <Form 
                     layout='vertical'
                     form={form}

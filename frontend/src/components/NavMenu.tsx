@@ -3,7 +3,7 @@ import { NavLink } from 'reactstrap';
 import { useLocation, Link } from 'react-router-dom';
 import './NavMenu.css';
 import 'antd/dist/antd.css';
-import { UserOutlined, CarOutlined, CompassOutlined, HomeOutlined, ShoppingCartOutlined, LockOutlined } from '@ant-design/icons';
+import { UserOutlined, BookOutlined } from '@ant-design/icons';
 
 import { Avatar, Layout, Menu } from 'antd';
 import { GlobalStore, globalContext } from '../reducers/GlobalStore';
@@ -34,7 +34,7 @@ export function NavMenu() {
      
 
       <Menu theme="dark" mode="horizontal" selectedKeys={getSelectedKeyFromPath()}>
-        <Menu.Item key="Home" icon={<HomeOutlined />}><NavLink tag={Link} to={navigateTo_IfLoggedIn("/home")}>Home</NavLink></Menu.Item>
+        <Menu.Item key="Books" icon={<BookOutlined />}><NavLink tag={Link} to={navigateTo_IfLoggedIn("/books")}>Books</NavLink></Menu.Item>
       </Menu>
       
     </Header>
