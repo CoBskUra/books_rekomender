@@ -1,6 +1,10 @@
+from matplotlib.style import library
 import pandas as pd
 import math
 from ast import literal_eval
+
+from sympy import li
+
 
 def Make_List_From_txt(title: str):
     genres = open('additional_data_base_info/' + title + '.txt','r')
@@ -54,6 +58,7 @@ def CosSimilarity(vector_1, book_vector, max_num_pages, max_publicate_data):
 def Recommend(user_read_books: pd.DataFrame):
     # pobranie danych
     lirabary = pd.read_csv('books.csv', on_bad_lines='skip')
+    lirabary["publication_date"] = lirabary["publication_date"].apply(lambda x: math.floor(x/10))
     
     # # usunięcie księżek przeczytanych
     cond = lirabary["bookID"].isin(user_read_books["bookID"])
@@ -85,3 +90,17 @@ def Recommend(user_read_books: pd.DataFrame):
     return lirabary
 
 
+def TheBestBooks(option:int = 0):
+    library = pd.read_csv('books.csv', on_bad_lines='skip')
+    if(option == 0):
+        return library.sort_values("average_rating", ascending=False)
+    if(option == 1):
+        library["average_rating_x_ratings_count"] = library["average_rating"]*library["ratings_count"]
+        library = library.sort_values("average_rating_x_ratings_count", ascending=False)
+        
+        return library.drop(["average_rating_x_ratings_count"], axis=1)
+    if(option == 2):
+        library["average_rating_x_month_rentals"] = library["average_rating"]*library["month_rentals"]
+        library = library.sort_values("average_rating_x_month_rentals", ascending=False)
+        
+        return library.drop(["average_rating_x_month_rentals"], axis=1)
