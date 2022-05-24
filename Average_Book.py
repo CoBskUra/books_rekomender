@@ -2,9 +2,9 @@ import pandas as pd
 from collections import Counter
 from ast import literal_eval
 
-colection_to_count = ["title", "authors",	"publisher", "target_groups", "language_code",	"country_of_origin"]
+colection_to_count = ["title",	"publisher", "target_groups", "language_code",	"country_of_origin"]
 colectiton_to_take_med = ["num_pages",	"publication_date",	"average_rating",	"ratings_count",	"month_rentals"]
-hamingowe = ["tags", "Genres"]
+hamingowe = ["tags", "Genres", "authors"]
 
 def avr_book(users_books: pd.DataFrame):
     avr_book = users_books.iloc[0]

@@ -1,5 +1,6 @@
 import pandas as pd
 import math
+from ast import literal_eval
 
 def Make_List_From_txt(title: str):
     genres = open('additional_data_base_info/' + title + '.txt','r')
@@ -28,11 +29,16 @@ def Haming_Similaryty(vector1:list, vector2:list):
     return wynik
 
 def CosSimilarity(vector_1, book_vector, max_num_pages, max_publicate_data):
-    columns_to_cos_metrice = ["authors", "publisher", "target_groups", "num_pages", "language_code", "country_of_origin", "publication_date"]
+    columns_to_cos_metrice = ["publisher", "target_groups", "num_pages", "language_code", "country_of_origin", "publication_date"]
     maxs = {"num_pages": max_num_pages, "publication_date": max_publicate_data}
     squer_sum_bookVector = 0
     squer_sum_vector = 0
     vector_1__multiplay__book_vector = 0
+
+    squer_sum_bookVector += 1
+    if any( item in literal_eval(vector_1["authors"]) for item in literal_eval(book_vector["authors"]) ):
+        vector_1__multiplay__book_vector += 1
+        squer_sum_vector += 1
     for name in columns_to_cos_metrice:
         if(type(vector_1[name]) == str):
             squer_sum_bookVector += 1
