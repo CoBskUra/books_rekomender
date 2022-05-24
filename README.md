@@ -40,10 +40,12 @@ RECOMENDER:
             unread = unread.sort_values("Sum_metrics", ascending=False)
 
 
-    TheBest - Zwraca posegregowane książki według kolejnych wartości:
+    TheBest - Przyjmuje bazę użytkownika i zwraca posegregowane książki po danych wartościach:
         0 - (default) segreguje malejąco po ocenie
         1 - segreguje malejąco po ocenie * licznie wyporzyczeń
         2 - segreguje malejąco po ocenie * licznie wyporzyczeń w miesiącu 
+
+        UWAGA!!! Założyłem, że w badzie użytkownika występuje zmienna user_rating
 
         UŻYCIE:
         import Recomender
