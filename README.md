@@ -40,11 +40,15 @@ RECOMENDER:
             unread = unread.sort_values("Sum_metrics", ascending=False)
 
 
-    TheBest - Przyjmuje bazę użytkownika i zwraca posegregowane książki po danych wartościach:
-        0 - (default) segreguje malejąco po ocenie
-        1 - segreguje malejąco po ocenie * licznie wyporzyczeń
-        2 - segreguje malejąco po ocenie * licznie wyporzyczeń w miesiącu 
-
+    TheBest - Przyjmuje bazę użytkownika i zwraca posegregowane książki po danych wartościach
+        option:
+            0 - (default) segreguje malejąco po ocenie
+            1 - segreguje malejąco po ocenie * licznie wyporzyczeń
+            2 - segreguje malejąco po ocenie * licznie wyporzyczeń w miesiącu 
+        isUserData - mówi czy wprowadzone książki należą do bazy użytkownika:
+            true - sprawia, że ocenę w powyrzszych opcjach zastępuje user_rating
+            false - sprawia, że ocenę w powyrzszych opcjach zastępuje avrege_raiting
+             
         UWAGA!!! Założyłem, że w badzie użytkownika występuje zmienna user_rating
 
         UŻYCIE:
