@@ -41,8 +41,14 @@ RECOMENDER:
 
 
     TheBest - Zwraca posegregowane książki według kolejnych wartości:
-        0 - (default) segreguje malejąco po średniej
-        1 - segreguje malejąco po śreniej * licznie wyporzyczeń
-        2 - segreguje malejąco po śreniej * licznie wyporzyczeń w miesiącu 
+        0 - (default) segreguje malejąco po ocenie
+        1 - segreguje malejąco po ocenie * licznie wyporzyczeń
+        2 - segreguje malejąco po ocenie * licznie wyporzyczeń w miesiącu 
+
+        UŻYCIE:
+        import Recomender
+
+        # otrzymujemy 10 najbardziej lubianych książek użytkownika który były popularne w tym miesiącu
+        sortedUserBooks = Recomender.TheBest(userBooks, 1)[:10]
 
 recomender_testing - testowanie poszczególnych części jak i całości algorytmu recomender

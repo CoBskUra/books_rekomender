@@ -90,17 +90,16 @@ def Recommend(user_read_books: pd.DataFrame):
     return lirabary
 
 
-def TheBestBooks(option:int = 0):
-    library = pd.read_csv('books.csv', on_bad_lines='skip')
+def TheBest(library: pd.DataFrame, option:int = 0):
     if(option == 0):
-        return library.sort_values("average_rating", ascending=False)
+        return library.sort_values("user_rating", ascending=False)
     if(option == 1):
-        library["average_rating_x_ratings_count"] = library["average_rating"]*library["ratings_count"]
-        library = library.sort_values("average_rating_x_ratings_count", ascending=False)
+        library["user_rating_x_ratings_count"] = library["user_rating"]*library["ratings_count"]
+        library = library.sort_values("user_rating_x_ratings_count", ascending=False)
         
-        return library.drop(["average_rating_x_ratings_count"], axis=1)
+        return library.drop(["user_rating_x_ratings_count"], axis=1)
     if(option == 2):
-        library["average_rating_x_month_rentals"] = library["average_rating"]*library["month_rentals"]
-        library = library.sort_values("average_rating_x_month_rentals", ascending=False)
+        library["user_rating_x_month_rentals"] = library["user_rating"]*library["month_rentals"]
+        library = library.sort_values("user_rating_x_month_rentals", ascending=False)
         
-        return library.drop(["average_rating_x_month_rentals"], axis=1)
+        return library.drop(["user_rating_x_month_rentals"], axis=1)
