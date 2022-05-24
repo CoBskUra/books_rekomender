@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BooksRecommender.Messages.Requests;
 
 namespace BooksRecommender.Controllers
 {
@@ -16,13 +17,13 @@ namespace BooksRecommender.Controllers
 
         [HttpGet]
         [Route("books/filter")]
-        public async Task<IActionResult> ShowBooks(string title, string author, List<string> genres, List<string> tags, double minRating, double maxRating)
+        public async Task<IActionResult> ShowBooks([FromBody] ShowBooksRequest request)
         {
             List<Book> books = new List<Book>();
 
             try
             {
-                books = await GetFilteredBooks(title, author, genres, tags, minRating, maxRating);
+                books = await GetFilteredBooks(request.title, request.author, request.genres, request.tags, request.minRating, request.maxRating);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found");
                 return Ok(books);
@@ -33,7 +34,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public Task<List<Book>> GetFilteredBooks(string title, string author, List<string> genres, List<string> tags, double minRating, double maxRating)
+        private Task<List<Book>> GetFilteredBooks(string title, string author, List<string> genres, List<string> tags, double minRating, double maxRating)
         {
             // dbcontext, where, itd
             return null;
@@ -58,7 +59,7 @@ namespace BooksRecommender.Controllers
                 return NotFound("Data not found");
             return Ok(book);
         }
-        public Task<Book> GetBookDetails(int bId)
+        private Task<Book> GetBookDetails(int bId)
         {
             // pobiera książkę o tym id
             return null;
@@ -83,7 +84,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public Task<List<Book>> GetUsersReadBooks(int uId)
+        private Task<List<Book>> GetUsersReadBooks(int uId)
         {
             // pobiera książki które użytkownik przeczytał
             // w sumie fajnie by było jakby jeszcze były widoczne jego ratingi tych książek
@@ -93,12 +94,12 @@ namespace BooksRecommender.Controllers
 
         [HttpPost]
         [Route("books/rate/{userId}/{bookId}")]
-        public async Task<IActionResult> SetRating([FromRoute]int userId, [FromRoute]int bookId, double rating)
+        public async Task<IActionResult> SetRating([FromRoute]int userId, [FromRoute]int bookId, [FromBody] SetRatingRequest request)
         {
             bool done;
             try
             {
-                done = await UpdateBookRating(userId, bookId, rating);
+                done = await UpdateBookRating(userId, bookId, request.rating);
                 if (done)
                     return Ok("Your rating has been saved");
                 else 
@@ -110,7 +111,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public async Task<bool> UpdateBookRating(int uId, int bId, double rating)
+        private async Task<bool> UpdateBookRating(int uId, int bId, double rating)
         {
             // książce zmienić avgRating i ratingsCount
             // użytkownikowi zapisać ten rating
@@ -137,7 +138,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public async Task<bool> UpdateUsersReadList(int uId, int bId)
+        private async Task<bool> UpdateUsersReadList(int uId, int bId)
         {
             // użytkownikowi zapisać daną książkę w przeczytanych
             return false;
@@ -162,7 +163,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public Task<List<Book>> RecommendFavorites(int uId)
+        private Task<List<Book>> RecommendFavorites(int uId)
         {
             // wywołanie odpowiedniego algorytmu pythonowego
             // używając zapewne IronPython (instalacja przez nuget packages)
@@ -188,7 +189,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public Task<List<Book>> RecommendAverage(int uId)
+        private Task<List<Book>> RecommendAverage(int uId)
         {
             // wywołanie odpowiedniego algorytmu pythonowego, innego niż w favorites
             // używając zapewne IronPython (instalacja przez nuget packages)
@@ -214,7 +215,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        public Task<List<Book>> RecommendBasedOnBook(int uId, int bId)
+        private Task<List<Book>> RecommendBasedOnBook(int uId, int bId)
         {
             // wywołanie odpowiedniego algorytmu pythonowego
             // używając zapewne IronPython (instalacja przez nuget packages)
