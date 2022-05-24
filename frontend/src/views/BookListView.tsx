@@ -33,14 +33,15 @@ const BookListView: React.FC<Props> = (props: Props) => {
 
     // to jest funkcja jedynie podgladowa do danych przykladowych
     const filterResultsHandler = (values: any) => {
-        if(!values.displayRead) getUnreadBooks();
+        let books = exampleBooks;
 
-        if(values.titleSearch.length > 0)
+        if(!values.displayRead) books = books.filter(book => book.readByUser != true);
+        if(values.titleSearch !== undefined)
         {
-           setBooks(exampleBooks.filter(book => book.title.toLocaleLowerCase().includes(values.titleSearch.toLowerCase())));
+            books = books.filter(book => book.title.toLocaleLowerCase().includes(values.titleSearch.toLowerCase())); 
         }
-        else setBooks(values.displayRead ? exampleBooks : exampleUnreadBooks);
-
+        
+        setBooks(books);
         console.log("Filtered Books " + values.titleSearch + " " + values.displayRead);
     };
 
