@@ -72,6 +72,10 @@ def Recommend(user_read_books: pd.DataFrame):
             Haming_Similaryty(ToHamming(genres, x["Genres"]), ToHamming(genres, row["Genres"]))/genres_lenght +
             Haming_Similaryty(ToHamming(tags, x["tags"]), ToHamming(tags,row["tags"]))/tags_lenght , axis=1)
     
+
+    bookid = user_read_books["bookID"]
+    lirabary["Sum_metrics"] = lirabary[bookid].sum(axis=1)
+
     return lirabary
 
 
