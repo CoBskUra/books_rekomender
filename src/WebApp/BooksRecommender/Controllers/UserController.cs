@@ -6,13 +6,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using BooksRecommender.Messages.Requests;
 
+using BooksRecommender.Services;
 namespace BooksRecommender.Controllers
 {
     [ApiController]
     public class UserController : Controller
     {
-        public UserController() // przekazanie dbcontext
+        private readonly IUserService _userService;
+        public UserController(IUserService service) // przekazanie dbcontext
         {
+            _userService = service;
         }
 
         [HttpGet]
@@ -23,7 +26,7 @@ namespace BooksRecommender.Controllers
 
             try
             {
-                books = await GetFilteredBooks(request.title, request.author, request.genres, request.tags, request.minRating, request.maxRating);
+                books = await _userService.GetFilteredBooks(request.title, request.author, request.genres, request.tags, request.minRating, request.maxRating);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found");
                 return Ok(books);
@@ -34,11 +37,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private Task<List<Book>> GetFilteredBooks(string title, string author, List<string> genres, List<string> tags, double minRating, double maxRating)
-        {
-            // dbcontext, where, itd
-            return null;
-        }
+ 
 
         [HttpGet]
         [Route("books/{bookId}")]
@@ -47,7 +46,7 @@ namespace BooksRecommender.Controllers
             Book book;
             try
             {
-                book = await GetBookDetails(bookId);
+                book = await _userService.GetBookDetails(bookId);
             }
             catch (Exception e)
             {
@@ -59,11 +58,7 @@ namespace BooksRecommender.Controllers
                 return NotFound("Data not found");
             return Ok(book);
         }
-        private Task<Book> GetBookDetails(int bId)
-        {
-            // pobiera książkę o tym id
-            return null;
-        }
+
 
         [HttpGet]
         [Route("books/read/{userId}")]
@@ -73,7 +68,7 @@ namespace BooksRecommender.Controllers
 
             try
             {
-                books = await GetUsersReadBooks(userId);
+                books = await _userService.GetUsersReadBooks(userId);
                 if (books == null)
                     return NotFound("Data not found");
                 return Ok(books); // 0 książek to nie błąd, po prostu żadnej nie przeczytał
@@ -84,13 +79,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private Task<List<Book>> GetUsersReadBooks(int uId)
-        {
-            // pobiera książki które użytkownik przeczytał
-            // w sumie fajnie by było jakby jeszcze były widoczne jego ratingi tych książek
-            // można by zrobić dodatkową klasę BooksWithIndividualRating?
-            return null;
-        }
+
 
         [HttpPost]
         [Route("books/rate/{userId}/{bookId}")]
@@ -99,7 +88,7 @@ namespace BooksRecommender.Controllers
             bool done;
             try
             {
-                done = await UpdateBookRating(userId, bookId, request.rating);
+                done = await _userService.UpdateBookRating(userId, bookId, request.rating);
                 if (done)
                     return Ok("Your rating has been saved");
                 else 
@@ -111,13 +100,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private async Task<bool> UpdateBookRating(int uId, int bId, double rating)
-        {
-            // książce zmienić avgRating i ratingsCount
-            // użytkownikowi zapisać ten rating
-            // jeśli nie miał oznaczonej książki jako przeczytaną - ustawić jako przeczytaną
-            return false;
-        }
+
 
         [HttpPost]
         [Route("book/read/{userId}/{bookId}")]
@@ -126,7 +109,7 @@ namespace BooksRecommender.Controllers
             bool done;
             try
             {
-                done = await UpdateUsersReadList(userId, bookId);
+                done = await _userService.UpdateUsersReadList(userId, bookId);
                 if (done)
                     return Ok("Your read books have been updated");
                 else
@@ -138,11 +121,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private async Task<bool> UpdateUsersReadList(int uId, int bId)
-        {
-            // użytkownikowi zapisać daną książkę w przeczytanych
-            return false;
-        }
+
 
         [HttpGet]
         [Route("recommend/favorites/{userId}")]
@@ -151,7 +130,7 @@ namespace BooksRecommender.Controllers
             List<Book> books = new List<Book>();
             try
             {
-                books = await RecommendFavorites(userId);
+                books = await _userService.RecommendFavorites(userId);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found"); // uznajemy że coś zawsze trzeba polecić
                 else
@@ -163,12 +142,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private Task<List<Book>> RecommendFavorites(int uId)
-        {
-            // wywołanie odpowiedniego algorytmu pythonowego
-            // używając zapewne IronPython (instalacja przez nuget packages)
-            return null;
-        }
+
 
         [HttpGet]
         [Route("recommend/average/{userId}")]
@@ -177,7 +151,7 @@ namespace BooksRecommender.Controllers
             List<Book> books = new List<Book>();
             try
             {
-                books = await RecommendAverage(userId);
+                books = await _userService.RecommendAverage(userId);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found");
                 else
@@ -189,12 +163,7 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private Task<List<Book>> RecommendAverage(int uId)
-        {
-            // wywołanie odpowiedniego algorytmu pythonowego, innego niż w favorites
-            // używając zapewne IronPython (instalacja przez nuget packages)
-            return null;
-        }
+
 
         [HttpGet]
         [Route("recommend/basedOnBook/{userId}/{bookId}")]
@@ -203,7 +172,7 @@ namespace BooksRecommender.Controllers
             List<Book> books = new List<Book>();
             try
             {
-                books = await RecommendBasedOnBook(userId, bookId);
+                books = await _userService.RecommendBasedOnBook(userId, bookId);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found");
                 else
@@ -215,11 +184,6 @@ namespace BooksRecommender.Controllers
                 return BadRequest("Something went wrong");
             }
         }
-        private Task<List<Book>> RecommendBasedOnBook(int uId, int bId)
-        {
-            // wywołanie odpowiedniego algorytmu pythonowego
-            // używając zapewne IronPython (instalacja przez nuget packages)
-            return null;
-        }       
+      
     }
 }
