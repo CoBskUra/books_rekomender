@@ -42,6 +42,7 @@ RECOMENDER:
 
     TheBest - Zwraca posegregowane książki według kolejnych wartości:
         0 - (default) segreguje malejąco po średniej
-        1 - segreguje malejąco 
+        1 - segreguje malejąco po śreniej * licznie wyporzyczeń
+        2 - segreguje malejąco po śreniej * licznie wyporzyczeń w miesiącu 
 
 recomender_testing - testowanie poszczególnych części jak i całości algorytmu recomender
