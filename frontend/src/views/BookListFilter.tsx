@@ -18,7 +18,7 @@ const BookListFilter: React.FC<Props> = (props: Props) => {
                 <Input placeholder="Title" />
             </Form.Item>
 
-            <Form.Item valuePropName="checked" name="displayRead">
+            <Form.Item valuePropName="checked" name="displayRead" initialValue={true}>
                 <Checkbox>Display read books</Checkbox>
             </Form.Item>
 
