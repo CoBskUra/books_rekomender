@@ -25,7 +25,7 @@ export default function Login(props : Props) {
         dispatch({ type: 'SET_TOKEN', payload: token });
         dispatch({ type: 'SET_USER', payload: user.email });
         message.success('Logged in succesfully!');
-        navigate('/books', {replace: true});
+        navigate('/books/all', {replace: true});
     }
 
     const loginHandler = (user : any) => {
