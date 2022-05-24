@@ -30,6 +30,9 @@ Recomender - po wprowadzeniu bazydanych użytkownika (rozumiem jako wybrane wier
 
         # teraz możemy wybrać n najbardziej popularnych książek do książki o id user_book_id
         n = 5
-        unread[:n]
+        n_best_matches = unread[:n]
+
+        # możliwe też jest szukanie po sumie dopasowań
+        unread = unread.sort_values("Sum_metrics", ascending=False)
 
 recomender_testing - testowanie poszczególnych części jak i całości algorytmu recomender
