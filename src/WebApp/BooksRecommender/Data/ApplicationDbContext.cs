@@ -17,5 +17,8 @@ namespace BooksRecommender.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+
+        public DbSet<Book> Books { get; set; }
+
     }
 }
