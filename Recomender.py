@@ -2,6 +2,7 @@ from matplotlib.style import library
 import pandas as pd
 import math
 from ast import literal_eval
+from sqlalchemy import false
 
 from sympy import li
 
@@ -90,17 +91,21 @@ def Recommend(user_read_books: pd.DataFrame):
     return lirabary
 
 
-def TheBestBooks(option:int = 0):
-    library = pd.read_csv('books.csv', on_bad_lines='skip')
+def TheBest(library: pd.DataFrame, option:int = 0, isUserBase:bool = False):
+
+    raiting = "average_rating"
+    if(isUserBase):
+        raiting = "user_rating"
+
     if(option == 0):
-        return library.sort_values("average_rating", ascending=False)
+        return library.sort_values(raiting, ascending=False)
     if(option == 1):
-        library["average_rating_x_ratings_count"] = library["average_rating"]*library["ratings_count"]
-        library = library.sort_values("average_rating_x_ratings_count", ascending=False)
+        library["rating_x_ratings_count"] = library[raiting]*library["ratings_count"]
+        library = library.sort_values("rating_x_ratings_count", ascending=False)
         
-        return library.drop(["average_rating_x_ratings_count"], axis=1)
+        return library.drop(["rating_x_ratings_count"], axis=1)
     if(option == 2):
-        library["average_rating_x_month_rentals"] = library["average_rating"]*library["month_rentals"]
-        library = library.sort_values("average_rating_x_month_rentals", ascending=False)
+        library["rating_x_month_rentals"] = library[raiting]*library["month_rentals"]
+        library = library.sort_values("rating_x_month_rentals", ascending=False)
         
-        return library.drop(["average_rating_x_month_rentals"], axis=1)
+        return library.drop(["rating_x_month_rentals"], axis=1)
