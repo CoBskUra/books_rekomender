@@ -12,7 +12,8 @@ interface State {
 }
 
 interface Props {
-    book: BookItem;
+    book: BookItem
+    showSimilar: boolean
 }
 
 const BookListItem: React.FC<Props> = (props: Props) => {
@@ -31,6 +32,9 @@ const BookListItem: React.FC<Props> = (props: Props) => {
         props.book.readByUser = true;
         setRatingBook(false);
     }
+    const showSimilarClickHandle = () => {
+        console.log("Show similar books to " + props.book.id);
+    } 
 
     return (
        <div className="space-align-block">
@@ -78,7 +82,14 @@ const BookListItem: React.FC<Props> = (props: Props) => {
                     </Col>
                 </Row>
                 <Row justify="end">
-                    { props.book.readByUser ? <Button disabled type="primary">Mark as read</Button> : <Button onClick={markAsReadClickHandle} type="primary">Mark as read</Button>}
+                    { 
+                        props.showSimilar ? 
+                            <Button onClick={showSimilarClickHandle} type="primary">Show similar books</Button> :
+                            (props.book.readByUser ? 
+                                <Button disabled type="primary">Mark as read</Button> : 
+                                <Button onClick={markAsReadClickHandle} type="primary">Mark as read</Button>
+                            )
+                    }
                 </Row>
             </Card>
             <br />
