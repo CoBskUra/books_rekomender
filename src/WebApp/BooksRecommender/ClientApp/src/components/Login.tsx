@@ -28,17 +28,17 @@ export default function Login(props : Props) {
         navigate('/books/all', {replace: true});
     }
 
+    const demoLogin = (user : any) => {
+        return (user.email === "user@book.com" && user.password === "zaq1@WSX")
+    }
     const loginHandler = (user : any) => {
-        // props.userService.login(user.email, user.password)
-        //     .then(response => {
-        //         successfullLogIn(user, "Bearer " + response.jwttoken);
-        //     }).catch(error => 
-        //         {
-        //             setUserNotFound(true);
-        //             console.log(user);
-        //             console.error(error)
-        //         });
-        successfullLogIn(user, "Bearer " + "abc");
+        if(demoLogin(user))
+            successfullLogIn(user, "Bearer " + "abc");
+        else {
+            setUserNotFound(true);
+            console.log(user);
+            console.error("User not found")
+        }
     }
 
     return (
