@@ -12,6 +12,7 @@ import { BookItem } from "../classes/BookItem";
 import BookListFilter from "./BookListFilter";
 import { validateLocaleAndSetLanguage } from "typescript";
 
+
 const { Title } = Typography;
 
 interface Props {
@@ -31,6 +32,12 @@ const BookListView: React.FC<Props> = (props: Props) => {
         setBooks(exampleUnreadBooks);
     }
 
+    useEffect(() => {
+        fetch('https://pokeapi.co/api/v2/type')
+            .then(response => response.json())
+            .then(data => console.log(data))
+    },[])
+
     // to jest funkcja jedynie podgladowa do danych przykladowych
     const filterResultsHandler = (values: any) => {
         let books = exampleBooks;
@@ -44,6 +51,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
         setBooks(books);
         console.log("Filtered Books " + values.titleSearch + " " + values.displayRead);
     };
+
 
     return (
         <div>
