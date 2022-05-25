@@ -4,7 +4,6 @@ import Books from './Books';
 import NotFound from './NotFound';
 import { globalContext } from '../reducers/GlobalStore';
 import Login from '../components/Login';
-import ReadBooks from './ReadBooks';
 
 
 export const AppRouter: React.FC = () => {
@@ -14,9 +13,10 @@ export const AppRouter: React.FC = () => {
       <Routes>
             { !globalState.isUserAuthenticated && <Route path='*' element={<Login />}/> }
             <Route path='/login' element={<Login />}/>
-            <Route path='books'>
+            <Route path='books' element={<Books />}>
               <Route path='all' element={<Books />} />
-              <Route path='read' element={<ReadBooks />}/>
+              <Route path='read' element={<Books />}/>
+              <Route path='recommended' element={<Books />}/>
             </Route>
             <Route path='*' element={<NotFound />}/>
       </Routes>

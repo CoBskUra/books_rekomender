@@ -19,7 +19,7 @@ interface Props {
 
 }
 
-const BookListView: React.FC<Props> = (props: Props) => {
+const RecommendedBookListView: React.FC<Props> = (props: Props) => {
     const pageSize = 5;
     const [totalElements, setTotalElements] = useState<number>(exampleBooks.length);
     const { globalState } = useContext(globalContext);
@@ -64,7 +64,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
 
                 <Col flex="auto">
                     <div className="site-layout-content">
-                    <Title>Books</Title>
+                    <Title>Recommended books for me</Title>
                         {books.map((item: BookItem) => (
                             <BookListItem book={item} showSimilar={false}/>)
                         )}
@@ -77,4 +77,4 @@ const BookListView: React.FC<Props> = (props: Props) => {
     );
 }
 
-export default BookListView;
+export default RecommendedBookListView;

@@ -16,7 +16,7 @@ interface Props {
 
 }
 
-const BookListView: React.FC<Props> = (props: Props) => {
+const ReadBookListView: React.FC<Props> = (props: Props) => {
     const pageSize = 5;
     const [totalElements, setTotalElements] = useState<number>(exampleReadBooks.length);
     const { globalState } = useContext(globalContext);
@@ -33,7 +33,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
                     <div className="site-layout-content">
                     <Title>My Read Books</Title>
                         {exampleReadBooks.map((item: BookItem) => (
-                            <BookListItem book={item}/>)
+                            <BookListItem book={item} showSimilar={true}/>)
                         )}
                     </div> 
                     <br />
@@ -44,4 +44,4 @@ const BookListView: React.FC<Props> = (props: Props) => {
     );
 }
 
-export default BookListView;
+export default ReadBookListView;
