@@ -3,7 +3,7 @@ import { NavLink } from 'reactstrap';
 import { useLocation, Link } from 'react-router-dom';
 import './NavMenu.css';
 import 'antd/dist/antd.css';
-import { UserOutlined, BookOutlined, ScheduleOutlined } from '@ant-design/icons';
+import { UserOutlined, BookOutlined, ScheduleOutlined, HeartOutlined } from '@ant-design/icons';
 
 import { Avatar, Button, Layout, Menu, message } from 'antd';
 import { GlobalStore, globalContext } from '../reducers/GlobalStore';
@@ -18,6 +18,7 @@ export function NavMenu() {
   const getSelectedKeyFromPath = () => {
     let path = location.pathname;
     if(path.includes('read')) return ['ReadBooks'];
+    if(path.includes('recommended')) return ['RecommendedBooks'];
     return ['Books'];
   }
   const navigateTo_IfLoggedIn = (to : string) => {
@@ -45,7 +46,8 @@ export function NavMenu() {
               <Menu.Item key="logout" onClick={logout}><NavLink tag={Link} to="/login">Log out</NavLink></Menu.Item>
           }
         <Menu.Item key="Books" icon={<BookOutlined />}><NavLink tag={Link} to={navigateTo_IfLoggedIn("/books/all")}>Books</NavLink></Menu.Item>
-        <Menu.Item key="ReadBooks" icon={<ScheduleOutlined />}><NavLink tag={Link} to={navigateTo_IfLoggedIn("/books/read")}>My read books</NavLink></Menu.Item>
+        <Menu.Item key="RecommendedBooks" icon={<HeartOutlined />}><NavLink tag={Link} to={navigateTo_IfLoggedIn("/books/recommended")}>Recommended books</NavLink></Menu.Item>
+        <Menu.Item key="ReadBooks" icon={<ScheduleOutlined />}><NavLink tag={Link} to={navigateTo_IfLoggedIn("/books/read")}>Read books</NavLink></Menu.Item>
       </Menu>
       
     </Header>

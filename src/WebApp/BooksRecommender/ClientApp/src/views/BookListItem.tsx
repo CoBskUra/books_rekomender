@@ -21,6 +21,7 @@ const BookListItem: React.FC<Props> = (props: Props) => {
 
     const markAsReadClickHandle = () => {
         setRatingBook(true);
+        //dgd
     }
     const markAsReadCancelHandle = () => {
         setRatingBook(false);
