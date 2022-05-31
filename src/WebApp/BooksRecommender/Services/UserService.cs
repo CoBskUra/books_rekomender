@@ -66,9 +66,15 @@ namespace BooksRecommender.Services
             response.numberOfPages= (count)/request.pageSize;
 
             if (response.numberOfPages * request.pageSize < count) response.numberOfPages += 1;
-            response.books= await books.Skip((request.pageNumber - 1) * request.pageSize)
+            var books2 = await books.Skip((request.pageNumber - 1) * request.pageSize)
                     .Take(request.pageSize).ToListAsync();
 
+            foreach(var book in books2)
+            {
+                var tmpbook = new Messages.Shared.MsgDisplayFilteredBook(book);
+                tmpbook.readByUser = _context.ReadBooks.Where(c => c.User.Email == request.email).Count() > 0;
+                response.books.Add(tmpbook);
+            }
             return response;
         }
         public async Task<Book> GetBookDetails(int bId)

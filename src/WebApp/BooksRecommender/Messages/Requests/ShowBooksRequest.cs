@@ -14,7 +14,6 @@ namespace BooksRecommender.Messages.Requests
         public bool orderAscending { get; set; }= false;
         public int pageNumber { get; set; } = 1;
         public int pageSize { get; set; }= 10;
-
-
+        public string email { get; set; } = "";
     }
 }
