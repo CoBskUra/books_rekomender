@@ -20,7 +20,7 @@ interface Props {
 }
 
 const BookListView: React.FC<Props> = (props: Props) => {
-    const pageSize = 5;
+    const _pageSize = 5;
     const [totalElements, setTotalElements] = useState<number>(exampleBooks.length);
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState(exampleBooks);
@@ -30,10 +30,32 @@ const BookListView: React.FC<Props> = (props: Props) => {
     }
 
     useEffect(() => {
-        fetch('https://pokeapi.co/api/v2/type')
+        // tu dane ma pobieraæ
+        let url = "/api/books/filter";
+        console.log(url);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify({
+                pageNumber: 1,
+                pageSize: _pageSize,
+                minRating: 0,
+                maxRating: 5
+            })
+        })
             .then(response => response.json())
-            .then(data => console.log(data))
-    },[])
+            .then(
+                (data) => {
+                    console.log(data);
+                },
+                (error) => {
+                    console.error(error);
+                }
+            )
+    }, [])
 
     // to jest funkcja jedynie podgladowa do danych przykladowych
     const filterResultsHandler = (values: any) => {
@@ -70,7 +92,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
                         )}
                     </div> 
                     <br />
-                    <Pagination onChange={changePageNumberHandler} pageSize={pageSize} total={totalElements} />              
+                    <Pagination onChange={changePageNumberHandler} pageSize={_pageSize} total={totalElements} />              
                 </Col>
             </Row>
         </div>
