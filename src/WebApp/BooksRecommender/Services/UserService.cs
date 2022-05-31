@@ -33,22 +33,19 @@ namespace BooksRecommender.Services
         }
         public async Task<List<Book>> GetFilteredBooks(ShowBooksRequest request)
         {
-            var books =  _context.Books.Where(c => c.title.Contains(request.title)
-                && c.authors.Contains(request.author)
-                && c.genres.Intersect(request.genres).Count() == request.genres.Count()
-                && c.avgRating > request.minRating && c.avgRating < request.maxRating);
+            var books =  _context.Books.Where(c => request.ShouldApply(c));
             switch (request.orderBy)
             {
                 case "Rating":
                     {
-                        if (request.orderAscending) books = books.OrderBy(c => c.avgRating);
-                        else books = books.OrderByDescending(c => c.avgRating);
+                        if (request.orderAscending) books = books.OrderBy(c => c.AvgRating);
+                        else books = books.OrderByDescending(c => c.AvgRating);
                         break;
                     }
                 default:
                     {
-                        if(request.orderAscending) books = books.OrderBy(c => c.title);
-                        else books = books.OrderByDescending(c => c.title);
+                        if(request.orderAscending) books = books.OrderBy(c => c.Title);
+                        else books = books.OrderByDescending(c => c.Title);
                         break;
                     }
             }
@@ -58,7 +55,7 @@ namespace BooksRecommender.Services
         public async Task<Book> GetBookDetails(int bId)
         {
             // pobiera książkę o tym id
-            return _context.Books.Where(c => c.id == bId).First();
+            return _context.Books.Where(c => c.Id == bId).First();
         }
         public async Task<GetUserReadBooksResponse> GetUsersReadBooks(string uId)
         {
@@ -80,7 +77,7 @@ namespace BooksRecommender.Services
             // jeśli nie miał oznaczonej książki jako przeczytaną - ustawić jako przeczytaną
             _context.ReadBooks.Add(new ReadBook
             {
-                Book = _context.Books.Where(c => c.id == bId).First(),
+                Book = _context.Books.Where(c => c.Id == bId).First(),
                 Rating = rating,
                 User = _context.Users.Where(c => c.Id == uId).First()
             });
@@ -91,7 +88,7 @@ namespace BooksRecommender.Services
         {
             _context.ReadBooks.Add(new ReadBook
             {
-                Book = _context.Books.Where(c => c.id == bId).First(),
+                Book = _context.Books.Where(c => c.Id == bId).First(),
                 Rating = null,
                 User = _context.Users.Where(c => c.Id == uId).First()
             });
