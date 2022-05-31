@@ -2,6 +2,6 @@
 {
     public class SetRatingRequest
     {
-        public double rating;
+        public double rating { get; set; }
     }
 }
