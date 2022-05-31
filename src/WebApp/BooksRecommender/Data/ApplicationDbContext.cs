@@ -19,6 +19,7 @@ namespace BooksRecommender.Data
         }
 
         public DbSet<Book> Books { get; set; }
+        public DbSet<ReadBook> ReadBooks { get; set; }
 
     }
 }
