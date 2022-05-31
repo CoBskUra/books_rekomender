@@ -31,9 +31,17 @@ namespace BooksRecommender.Services
         {
             _context = context;
         }
+
+
         public async Task<GetFilteredBooksResponse> GetFilteredBooks(ShowBooksRequest request)
         {
-            var books =  _context.Books.Where(c => request.ShouldApply(c));
+            var books = _context.Books
+                .Where(c => c.Title.Contains(request.title))
+                .Where(c => c.Authors.Contains(request.author))
+                .Where(c => c.AvgRating > request.minRating)
+                .Where(c => c.AvgRating < request.maxRating)
+                .Where(c => c.Tags.Contains(request.tag))
+                .Where(c => c.Genres.Contains(request.genre));
             switch (request.orderBy)
             {
                 case "Rating":

@@ -21,7 +21,7 @@ namespace BooksRecommender.Controllers
             _userService = service;
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("filter")]
         public async Task<IActionResult> ShowBooks([FromBody] ShowBooksRequest request)
         {
