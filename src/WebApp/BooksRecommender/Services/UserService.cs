@@ -13,7 +13,7 @@ namespace BooksRecommender.Services
 {
     public interface IUserService
     {
-        public Task<List<Book>> GetFilteredBooks(ShowBooksRequest request);
+        public Task<GetFilteredBooksResponse> GetFilteredBooks(ShowBooksRequest request);
         public Task<Book> GetBookDetails(int bId);
         public Task<GetUserReadBooksResponse> GetUsersReadBooks(string uId);
         public Task<bool> SetBookAsRead(string uId, int bId, double? rating);
@@ -31,7 +31,7 @@ namespace BooksRecommender.Services
         {
             _context = context;
         }
-        public async Task<List<Book>> GetFilteredBooks(ShowBooksRequest request)
+        public async Task<GetFilteredBooksResponse> GetFilteredBooks(ShowBooksRequest request)
         {
             var books =  _context.Books.Where(c => request.ShouldApply(c));
             switch (request.orderBy)
@@ -49,8 +49,15 @@ namespace BooksRecommender.Services
                         break;
                     }
             }
-            return await books.Skip((request.pageNumber - 1) * request.pageSize)
+            GetFilteredBooksResponse response = new();
+            int count = books.Count();
+            response.numberOfPages= (count)/request.pageSize;
+
+            if (response.numberOfPages * request.pageSize < count) response.numberOfPages += 1;
+            response.books= await books.Skip((request.pageNumber - 1) * request.pageSize)
                     .Take(request.pageSize).ToListAsync();
+
+            return response;
         }
         public async Task<Book> GetBookDetails(int bId)
         {
