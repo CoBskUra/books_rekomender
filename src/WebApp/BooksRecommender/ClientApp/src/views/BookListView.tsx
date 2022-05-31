@@ -11,6 +11,7 @@ import { exampleBooks, exampleUnreadBooks } from "../exampleData/ExampleItem";
 import { BookItem } from "../classes/BookItem";
 import BookListFilter from "./BookListFilter";
 import { validateLocaleAndSetLanguage } from "typescript";
+import { number } from "yup";
 
 
 const { Title } = Typography;
@@ -20,41 +21,43 @@ interface Props {
 }
 
 const BookListView: React.FC<Props> = (props: Props) => {
-    const _pageSize = 5;
-    const [totalElements, setTotalElements] = useState<number>(exampleBooks.length);
+    const [_pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState<number>(exampleBooks.length);
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState(exampleBooks);
 
-    function changePageNumberHandler(pageNumber : number) {
+    function changePageNumberHandler(pageNumber : number, pageSize: number) {
+        setPageSize(pageSize);
         console.log("Changed page to: " + pageNumber);
+        fetchData(pageNumber);
     }
 
-    useEffect(() => {
-        // tu dane ma pobieraæ
-        let url = "/api/books/filter";
-        console.log(url);
-        fetch(url, {
+    function fetchData(_pageNumber : number) {
+        fetch("/api/books/filter", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-                // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: JSON.stringify({
-                pageNumber: 1,
+                pageNumber: _pageNumber,
                 pageSize: _pageSize,
-                minRating: 0,
-                maxRating: 5
             })
         })
             .then(response => response.json())
             .then(
                 (data) => {
-                    console.log(data);
+                    console.log(data.books);
+                    setBooks(data.books);
+                    setTotalPages(data.numberOfPages);
                 },
                 (error) => {
                     console.error(error);
                 }
             )
+    }
+    
+    useEffect(() => {
+        fetchData(1);
     }, [])
 
     // to jest funkcja jedynie podgladowa do danych przykladowych
@@ -92,7 +95,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
                         )}
                     </div> 
                     <br />
-                    <Pagination onChange={changePageNumberHandler} pageSize={_pageSize} total={totalElements} />              
+                    <Pagination onChange={changePageNumberHandler} pageSize={_pageSize} total={totalPages*_pageSize} />              
                 </Col>
             </Row>
         </div>

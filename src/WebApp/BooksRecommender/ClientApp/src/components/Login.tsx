@@ -29,7 +29,7 @@ export default function Login(props : Props) {
     }
 
     const demoLogin = (user : any) => {
-        return (user.email === "user@book.com" && user.password === "zaq1@WSX")
+        return (user.email === "user@book.com" && user.password === "zaq1@WSX") || (user.email === "admin@book.com" && user.password === "admin") 
     }
     const loginHandler = (user : any) => {
         if(demoLogin(user))
