@@ -109,7 +109,7 @@ namespace BooksRecommender.Controllers
             {
                 done = await _userService.UpdateUsersReadList(email, bookId);
                 if (done)
-                    return Ok("Saved");
+                    return Ok("Your read books have been updated");
                 else
                     return NotFound("Data not found");
             }
@@ -129,7 +129,7 @@ namespace BooksRecommender.Controllers
             {
                 done = await _userService.SetBookAsFavourite(email, bookId);
                 if (done)
-                    return Ok("Your read books have been updated");
+                    return Ok("Saved");
                 else
                     return NotFound("Data not found");
             }
@@ -149,7 +149,7 @@ namespace BooksRecommender.Controllers
             {
                 done = await _userService.UnsetBookAsFavourite(email, bookId);
                 if (done)
-                    return Ok("Your read books have been updated");
+                    return Ok("Saved");
                 else
                     return NotFound("Data not found");
             }
