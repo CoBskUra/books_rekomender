@@ -345,7 +345,7 @@ namespace BooksRecommender.Services
         {
             var book = _context.ReadBooks.Where(b => b.Id == bId).First();
             book.IsFavourite = true;
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
             return true;
         }
 
@@ -353,7 +353,7 @@ namespace BooksRecommender.Services
         {
             var book = _context.ReadBooks.Where(b => b.Id == bId).First();
             book.IsFavourite = false;
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
             return true;
         }
     }
