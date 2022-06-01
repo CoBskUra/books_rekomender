@@ -319,5 +319,13 @@ namespace BooksRecommender.Services
             books = books.GetRange(0, i);
             return books;
         }
+
+        public async Task<bool> SetBookAsFavourite(string email, int bId)
+        {
+            var book = _context.ReadBooks.Where(b => b.Id == bId).First();
+            book.IsFavourite = true;
+            _context.SaveChanges();
+            return true;
+        }
     }
 }
