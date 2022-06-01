@@ -137,7 +137,27 @@ namespace BooksRecommender.Services
             List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(email);
             DataFrame bookDf = BooksToDF(favoriteBooks);
             DataFrame df = recommenderInstance.Recommend(bookDf);
-            List<Book> recommendations = DFToBooks(df);
+            //List<Book> recommendations = DFToBooks(df);
+
+            Book testBook = new Book
+            {
+                Id = 1,
+                CsvId = 1,
+                Authors = "Ala Makota",
+                AvgRating =5.0,
+                Country = "Polska",
+                Genres = "adventure",
+                LanguageCode = "pl",
+                MonthRentals = 10,
+                NumPages = 120,
+                PublicationDate = new DateTime(2000, 10, 10),
+                Publisher = "wydawnictwo",
+                RatingsCount = 1902,
+                Tags = "fajne",
+                TargetGroups = "my",
+                Title = "Jezu nie wiem jaki tytul"
+            };
+            List<Book> recommendations = new List<Book> { testBook };
 
             return recommendations;
         }
@@ -326,7 +346,7 @@ namespace BooksRecommender.Services
             var book = _context.ReadBooks.Where(b => b.Id == bId).First();
             book.IsFavourite = true;
             _context.SaveChanges();
-            return true;
+            return false;
         }
 
         public async Task<bool> UnsetBookAsFavourite(string email, int bId)
@@ -334,7 +354,7 @@ namespace BooksRecommender.Services
             var book = _context.ReadBooks.Where(b => b.Id == bId).First();
             book.IsFavourite = false;
             _context.SaveChanges();
-            return true;
+            return false;
         }
     }
 }
