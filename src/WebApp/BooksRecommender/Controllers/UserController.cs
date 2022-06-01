@@ -109,6 +109,26 @@ namespace BooksRecommender.Controllers
             {
                 done = await _userService.UpdateUsersReadList(email, bookId);
                 if (done)
+                    return Ok("Saved");
+                else
+                    return NotFound("Data not found");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Something went wrong");
+            }
+        }
+
+        [HttpPost]
+        [Route("favourite/{email}/{bookId}")]
+        public async Task<IActionResult> SetAsFavourite([FromRoute] string email, [FromRoute] int bookId)
+        {
+            bool done;
+            try
+            {
+                done = await _userService.SetBookAsFavourite(email, bookId);
+                if (done)
                     return Ok("Your read books have been updated");
                 else
                     return NotFound("Data not found");

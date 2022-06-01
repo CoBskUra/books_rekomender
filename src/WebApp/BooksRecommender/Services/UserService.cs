@@ -25,6 +25,7 @@ namespace BooksRecommender.Services
         public Task<List<Book>> RecommendFavorites(string email);
         public Task<List<Book>> RecommendAverage(string email);
         public Task<List<Book>> RecommendBasedOnBook(string uId, int bId);
+        public Task<bool> SetBookAsFavourite(string email, int bId);
 
 
     }
