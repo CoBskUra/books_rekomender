@@ -343,17 +343,17 @@ namespace BooksRecommender.Services
 
         public async Task<bool> SetBookAsFavourite(string email, int bId)
         {
-            var book = _context.ReadBooks.Where(b => b.Id == bId).First();
+            var book = _context.ReadBooks.Where(c => c.User.Email == email).Where(c => c.Book.Id == bId).First();
             book.IsFavourite = true;
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> UnsetBookAsFavourite(string email, int bId)
         {
-            var book = _context.ReadBooks.Where(b => b.Id == bId).First();
+            var book = _context.ReadBooks.Where(c => c.User.Email==email).Where(c => c.Book.Id == bId).First();
             book.IsFavourite = false;
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
     }
