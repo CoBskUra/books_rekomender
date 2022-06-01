@@ -57,7 +57,7 @@ const ReadBookListView: React.FC<Props> = (props: Props) => {
                     <div className="site-layout-content2">
                     <Title>My Read Books</Title>
                         { !loading ? books?.map((item: BookItem) => (
-                                <BookListItem book={item} showSimilar={false}/>)
+                                <BookListItem book={item} showSimilar={true}/>)
                             ) : 
                             <Col flex="auto">
                                 <Row align="middle" justify="center">
