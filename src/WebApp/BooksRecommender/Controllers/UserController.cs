@@ -140,6 +140,26 @@ namespace BooksRecommender.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("unfavourite/{email}/{bookId}")]
+        public async Task<IActionResult> UnsetAsFavourite([FromRoute] string email, [FromRoute] int bookId)
+        {
+            bool done;
+            try
+            {
+                done = await _userService.UnsetBookAsFavourite(email, bookId);
+                if (done)
+                    return Ok("Your read books have been updated");
+                else
+                    return NotFound("Data not found");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Something went wrong");
+            }
+        }
+
 
         [HttpGet]
         [Route("recommend/favorites/{email}")]
