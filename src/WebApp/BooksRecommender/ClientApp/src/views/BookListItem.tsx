@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { Card, Row, Col, Image, Rate, Tag, Divider, Button } from "antd";
+import { Card, Row, Col, Image, Rate, Tag, Divider, Button, Tooltip } from "antd";
 import { BookItem } from '../classes/BookItem';
 
 import { Typography } from 'antd';
+import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
 import { RateTheBookModal } from './RateTheBookModal';
 import { globalContext, GlobalStore } from '../reducers/GlobalStore';
 const { Text } = Typography;
@@ -19,6 +20,7 @@ interface Props {
 const BookListItem: React.FC<Props> = (props: Props) => {
     const [ratingBook, setRatingBook] = useState(false);
     const { globalState } = useContext(globalContext);
+    const [favourite, setFavourite] = useState(props.book.isFavourite);
 
     const markAsReadClickHandle = () => {
         setRatingBook(true);
@@ -46,6 +48,12 @@ const BookListItem: React.FC<Props> = (props: Props) => {
     const showSimilarClickHandle = () => {
         console.log("Show similar books to " + props.book.id);
     } 
+    const favouriteClickHandler = () => {
+        let url = "/api/books/" + (favourite ? "unfavourite/" : "favourite/") + globalState.loggedUser + "/" + props.book.id;
+        console.log(url);
+        fetch(url, { method: 'POST' });
+        setFavourite(!favourite);
+    }
     function round(value : number, step : number = 0.5) {
         step || (step = 1.0);
         var inv = 1.0 / step;
@@ -101,7 +109,17 @@ const BookListItem: React.FC<Props> = (props: Props) => {
                 <Row justify="end">
                     { 
                         props.showSimilar ? 
-                            <Button onClick={showSimilarClickHandle} type="primary">Show similar books</Button> :
+                            <div>
+                                { favourite  ? 
+                                    <Tooltip title="Remove from favourites">
+                                        <Button type="text" onClick={favouriteClickHandler} shape="circle" icon={<HeartFilled style={{ color: '#eb2f96', fontSize: '30px' }}/>} />
+                                    </Tooltip>
+                                    :
+                                    <Tooltip title="Add to favourites">
+                                        <Button type="text" onClick={favouriteClickHandler} shape="circle" icon={<HeartTwoTone twoToneColor="#eb2f96" style={{ fontSize: '30px' }}/>} />
+                                    </Tooltip>
+                                }
+                            </div> :
                             (props.book.readByUser ? 
                                 <Button disabled type="primary">Mark as read</Button> : 
                                 <Button onClick={markAsReadClickHandle} type="primary">Mark as read</Button>

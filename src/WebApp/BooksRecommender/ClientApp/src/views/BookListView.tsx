@@ -23,7 +23,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
     const [totalPages, setTotalPages] = useState<number>(1);
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState<BookItem[]>();
-    const [filter, setFilter] = useState<Filter>(emptyFilter);
+    let filter = emptyFilter;
     const [_orderBy, setOrderBy] = useState("Rating");
     const [loading, setLoading] = useState(false);
 
@@ -103,7 +103,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
                 genre : values.genreSearch
             }
         }
-        setFilter(_filter);  
+        filter = _filter;  
         fetchData(1);
     };
     const onOrderByChangeHandler = (value : string) => {
