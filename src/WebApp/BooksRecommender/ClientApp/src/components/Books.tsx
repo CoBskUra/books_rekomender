@@ -6,6 +6,7 @@ import { globalContext } from '../reducers/GlobalStore';
 import BookListView from '../views/BookListView';
 import ReadBookListView from '../views/ReadBookListView';
 import RecommendedBookListView from '../views/RecommendedBookListView';
+import SimilarBookListView from '../views/SimilarBookListView copy';
 
 export default function Books() {
   const { globalState } = useContext(globalContext);
@@ -15,6 +16,7 @@ export default function Books() {
   const getBookList = () => {
     let path = location.pathname;
     if(path.includes('read')) return <ReadBookListView />;
+    if(path.includes('basedOnBook')) return <SimilarBookListView />
     if(path.includes('recommended')) return <RecommendedBookListView />;
     return <BookListView />;
   }

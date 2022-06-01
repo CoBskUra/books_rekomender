@@ -18,7 +18,8 @@ export function NavMenu() {
     let path = location.pathname;
     if(path.includes('read')) return ['ReadBooks'];
     if(path.includes('recommended')) return ['RecommendedBooks'];
-    return ['Books'];
+    if(path.includes('all')) return ['Books'];
+    return ['None'];
   }
   const navigateTo_IfLoggedIn = (to : string) => {
     return globalState.isUserAuthenticated ? to : "/login"

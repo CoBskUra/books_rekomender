@@ -13,10 +13,12 @@ export const AppRouter: React.FC = () => {
       <Routes>
             { !globalState.isUserAuthenticated && <Route path='*' element={<Login />}/> }
             <Route path='/login' element={<Login />}/>
-            <Route path='books' element={<Books />}>
+            <Route path='books'>
               <Route path='all' element={<Books />} />
               <Route path='read' element={<Books />}/>
+              <Route path='basedOnBook/:bookId' element={<Books />} />
               <Route path='recommended' element={<Books />}/>
+              <Route path='*' element={<NotFound />}/>
             </Route>
             <Route path='*' element={<NotFound />}/>
       </Routes>

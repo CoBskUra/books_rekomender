@@ -6,6 +6,7 @@ import { Typography } from 'antd';
 import { HeartFilled, HeartTwoTone } from '@ant-design/icons';
 import { RateTheBookModal } from './RateTheBookModal';
 import { globalContext } from '../reducers/GlobalStore';
+import { useNavigate } from 'react-router-dom';
 const { Text } = Typography;
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const BookListItem: React.FC<Props> = (props: Props) => {
+    const navigate = useNavigate();
     const [ratingBook, setRatingBook] = useState(false);
     const { globalState } = useContext(globalContext);
     const [favourite, setFavourite] = useState(props.book.isFavourite);
@@ -42,7 +44,7 @@ const BookListItem: React.FC<Props> = (props: Props) => {
         setRatingBook(false);
     }
     const showSimilarClickHandle = () => {
-        console.log("Show similar books to " + props.book.id);
+        navigate('/books/basedOnBook/'+props.book.id, {replace: true});
     } 
     const favouriteClickHandler = () => {
         let url = "/api/books/" + (favourite ? "unfavourite/" : "favourite/") + globalState.loggedUser + "/" + props.book.id;
