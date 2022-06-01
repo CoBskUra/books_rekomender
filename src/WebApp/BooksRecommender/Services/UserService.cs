@@ -127,7 +127,7 @@ namespace BooksRecommender.Services
             // wywołanie odpowiedniego algorytmu pythonowego
             // używając zapewne IronPython (instalacja przez nuget packages)
 
-            var engine = Python.CreateEngine();
+            /*var engine = Python.CreateEngine();
             var source = engine.CreateScriptSourceFromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PythonCode\\Recomender.py"));
             var scope = engine.CreateScope();
             source.Execute(scope);
@@ -136,7 +136,7 @@ namespace BooksRecommender.Services
 
             List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(email);
             DataFrame bookDf = BooksToDF(favoriteBooks);
-            DataFrame df = recommenderInstance.Recommend(bookDf);
+            DataFrame df = recommenderInstance.Recommend(bookDf);*/
             //List<Book> recommendations = DFToBooks(df);
 
             Book testBook = new Book
@@ -345,16 +345,16 @@ namespace BooksRecommender.Services
         {
             var book = _context.ReadBooks.Where(b => b.Id == bId).First();
             book.IsFavourite = true;
-            _context.SaveChanges();
-            return false;
+            _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UnsetBookAsFavourite(string email, int bId)
         {
             var book = _context.ReadBooks.Where(b => b.Id == bId).First();
             book.IsFavourite = false;
-            _context.SaveChanges();
-            return false;
+            _context.SaveChangesAsync();
+            return true;
         }
     }
 }
