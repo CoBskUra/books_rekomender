@@ -13,7 +13,7 @@ namespace BooksRecommender.Messages.Shared
             authors = book.Authors.Split(';');
             publisher = book.Publisher;
             genres = book.Genres.Split(';');
-            targetGroups = book.TargetGroups.Split(';');
+            targetGroups = book.TargetGroups;//book.TargetGroups.Split(';');
             tags= book.Tags.Split(';');
             numPages = book.NumPages;
             languageCode = book.LanguageCode;
@@ -30,7 +30,7 @@ namespace BooksRecommender.Messages.Shared
         public string[] authors { get; set; }
         public string publisher { get; set; }
         public string[] genres { get; set; }
-        public string[] targetGroups { get; set; }
+        public string targetGroups { get; set; } // wiem że jest groupS ale zawsze jest jedna grupa 
         public string[] tags { get; set; }
         public int numPages { get; set; }
         public string languageCode { get; set; }

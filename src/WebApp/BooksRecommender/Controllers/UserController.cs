@@ -177,7 +177,7 @@ namespace BooksRecommender.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest("Something went wrong");
+                return BadRequest(e.Message);
             }
         }
 
