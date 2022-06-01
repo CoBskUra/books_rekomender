@@ -120,6 +120,46 @@ namespace BooksRecommender.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("favourite/{email}/{bookId}")]
+        public async Task<IActionResult> SetAsFavourite([FromRoute] string email, [FromRoute] int bookId)
+        {
+            bool done;
+            try
+            {
+                done = await _userService.SetBookAsFavourite(email, bookId);
+                if (done)
+                    return Ok("Saved");
+                else
+                    return NotFound("Data not found");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Something went wrong");
+            }
+        }
+
+        [HttpPost]
+        [Route("unfavourite/{email}/{bookId}")]
+        public async Task<IActionResult> UnsetAsFavourite([FromRoute] string email, [FromRoute] int bookId)
+        {
+            bool done;
+            try
+            {
+                done = await _userService.UnsetBookAsFavourite(email, bookId);
+                if (done)
+                    return Ok("Saved");
+                else
+                    return NotFound("Data not found");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest("Something went wrong");
+            }
+        }
+
 
         [HttpGet]
         [Route("recommend/favorites/{email}")]

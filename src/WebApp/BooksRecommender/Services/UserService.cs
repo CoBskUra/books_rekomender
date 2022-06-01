@@ -25,6 +25,8 @@ namespace BooksRecommender.Services
         public Task<List<Book>> RecommendFavorites(string email);
         public Task<List<Book>> RecommendAverage(string email);
         public Task<List<Book>> RecommendBasedOnBook(string uId, int bId);
+        public Task<bool> SetBookAsFavourite(string email, int bId);
+        public Task<bool> UnsetBookAsFavourite(string email, int bId);
 
 
     }
@@ -317,6 +319,22 @@ namespace BooksRecommender.Services
             int i = books.Count >= 10 ? 10 : books.Count;
             books = books.GetRange(0, i);
             return books;
+        }
+
+        public async Task<bool> SetBookAsFavourite(string email, int bId)
+        {
+            var book = _context.ReadBooks.Where(b => b.Id == bId).First();
+            book.IsFavourite = true;
+            _context.SaveChanges();
+            return true;
+        }
+
+        public async Task<bool> UnsetBookAsFavourite(string email, int bId)
+        {
+            var book = _context.ReadBooks.Where(b => b.Id == bId).First();
+            book.IsFavourite = false;
+            _context.SaveChanges();
+            return true;
         }
     }
 }
