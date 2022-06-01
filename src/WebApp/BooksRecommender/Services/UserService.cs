@@ -72,7 +72,7 @@ namespace BooksRecommender.Services
             foreach(var book in books2)
             {
                 var tmpbook = new Messages.Shared.MsgDisplayFilteredBook(book);
-                tmpbook.readByUser = _context.ReadBooks.Where(c => c.User.Email == request.email).Count() > 0;
+                tmpbook.readByUser = _context.ReadBooks.Where(c => c.Book.Id == book.Id).Where(c => c.User.Email == request.email).Count() > 0;
                 response.books.Add(tmpbook);
             }
             return response;
