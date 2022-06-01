@@ -4,7 +4,7 @@ import { BookItem } from '../classes/BookItem';
 
 import { Typography } from 'antd';
 import { RateTheBookModal } from './RateTheBookModal';
-import { globalContext } from '../reducers/GlobalStore';
+import { globalContext, GlobalStore } from '../reducers/GlobalStore';
 const { Text } = Typography;
 
 interface State {
@@ -27,14 +27,30 @@ const BookListItem: React.FC<Props> = (props: Props) => {
         setRatingBook(false);
         console.log("Rating has been canceled");
       }
-    const markAsReadConfirmHandle = (rating : number) => {
-        console.log("Book " + props.book.id + " has been read by " + globalState.loggedUser + " and rated as " + rating);
+    const markAsReadConfirmHandle = (_rating : number) => {
+        let url = "/api/books/rate/" + globalState.loggedUser + "/" + props.book.id;
+        console.log(url);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                rating: _rating
+            })
+        })
+
         props.book.readByUser = true;
         setRatingBook(false);
     }
     const showSimilarClickHandle = () => {
         console.log("Show similar books to " + props.book.id);
     } 
+    function round(value : number, step : number = 0.5) {
+        step || (step = 1.0);
+        var inv = 1.0 / step;
+        return Math.round(value * inv) / inv;
+    }
 
     return (
        <div className="space-align-block">
@@ -42,7 +58,8 @@ const BookListItem: React.FC<Props> = (props: Props) => {
                 <Row justify="space-between">
                     <Col>
                         <Row>
-                            Authors: { props.book.authors }
+                            <span style={{ marginRight: 8 }}>Authors:</span>
+                            {props.book.authors?.map((author, i) => (<Text style={{ marginRight: 2 }}>{author}{i < (Number(props.book.authors?.length.valueOf()) - 1) ? "," : " "}</Text>))}
                         </Row>
                         <Row>
                             Publisher: { props.book.publisher }
@@ -58,10 +75,10 @@ const BookListItem: React.FC<Props> = (props: Props) => {
                             Language: {props.book.languageCode}
                         </Row>
                         <Row>
-                            Number of pages: {props.book.pagesNum.toLocaleString()}
+                            Number of pages: {props.book.numPages.toLocaleString()}
                         </Row>
                         <Row>
-                            Country of origin: {props.book.countryOfOrigin}
+                            Country of origin: {props.book.country}
                         </Row>
                         <Row>
                             Read this month: {props.book.monthRentals.toLocaleString()}
@@ -74,7 +91,7 @@ const BookListItem: React.FC<Props> = (props: Props) => {
 
                     <Col>
                         <Row justify="center">
-                            <Rate allowHalf disabled defaultValue={props.book.averageRating} />
+                            <Rate allowHalf disabled value={round(props.book.avgRating)} />
                         </Row>
                         <Row justify="center">
                             {props.book.ratingsCount.toLocaleString()} ratings

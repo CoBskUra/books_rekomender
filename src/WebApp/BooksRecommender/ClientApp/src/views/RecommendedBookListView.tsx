@@ -1,5 +1,5 @@
-import {Pagination, Typography} from "antd"
-import { FilterOutlined } from '@ant-design/icons';
+import {Form, Pagination, Select, Typography} from "antd"
+import { LoadingOutlined } from '@ant-design/icons';
 
 import React, { useContext, useEffect, useState } from 'react';
 import "antd/dist/antd.css";
@@ -14,63 +14,83 @@ import { validateLocaleAndSetLanguage } from "typescript";
 
 
 const { Title } = Typography;
+const { Option } = Select;
 
 interface Props {
 
 }
 
 const RecommendedBookListView: React.FC<Props> = (props: Props) => {
-    const pageSize = 5;
-    const [totalElements, setTotalElements] = useState<number>(exampleBooks.length);
+    const [_pageSize, setPageSize] = useState(5);
+    const [totalPages, setTotalPages] = useState<number>(1);
     const { globalState } = useContext(globalContext);
-    const [books, setBooks] = useState(exampleBooks);
+    const [books, setBooks] = useState<BookItem[]>();
+    const [recommendType, setRecommendType] = useState("favorites");
+    const [loading, setLoading] = useState(false);
 
-    function changePageNumberHandler(pageNumber : number) {
-        console.log("Changed page to: " + pageNumber);
+    function changePageNumberHandler(pageNumber : number, pageSize: number) {
+        setPageSize(pageSize);
+        fetchData(pageNumber);
+    }
+    function fetchData(_pageNumber : number) {
+        setLoading(true);
+        let url = "/api/books/recommend/" + recommendType + "/" + globalState.loggedUser; 
+        console.log(url);
+        fetch("url", {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(
+                (data) => {
+                    setBooks(data.books);
+                    setTotalPages(data.numberOfPages);
+                    setLoading(false);
+                },
+                (error) => {
+                    console.error(error);
+                }
+            )
+    }
+    const onOrderByChangeHandler = (value : string) => {
+        setRecommendType(value);
+        fetchData(1);
     }
 
     useEffect(() => {
-        fetch('https://pokeapi.co/api/v2/type')
-            .then(response => response.json())
-            .then(data => console.log(data))
-    },[])
-
-    // to jest funkcja jedynie podgladowa do danych przykladowych
-    const filterResultsHandler = (values: any) => {
-        let books = exampleBooks;
-
-        if(!values.displayRead) books = books.filter(book => book.readByUser != true);
-        if(values.titleSearch !== undefined)
-        {
-            books = books.filter(book => book.title.toLocaleLowerCase().includes(values.titleSearch.toLowerCase())); 
-        }
-        
-        setBooks(books);
-        console.log("Filtered Books " + values.titleSearch + " " + values.displayRead);
-    };
+        fetchData(1);
+    }, [recommendType])
 
 
     return (
         <div>
             <Row style={{ marginTop: 50 }}>
-                <Col flex="400px">
-                    <Card>
-                        <Title level={2}><FilterOutlined /> Filter results</Title>
-                        <BookListFilter filterResultsHandler={filterResultsHandler} />
-                    </Card>
-                </Col>
-
-                <Col flex="20px" />
-
                 <Col flex="auto">
-                    <div className="site-layout-content">
+                    <div className="site-layout-content2">
                     <Title>Recommended books for me</Title>
-                        {books.map((item: BookItem) => (
-                            <BookListItem book={item} showSimilar={false}/>)
-                        )}
+
+                    <Form.Item label="Recommend books based on" name="recommendBy">
+                        <Select
+                            placeholder="favourites"
+                            onChange={onOrderByChangeHandler}
+                        >
+                            <Option value="favourites">Favourites</Option>
+                            <Option value="average">Average</Option>
+                        </Select>
+                    </Form.Item>
+
+                        { !loading ? books?.map((item: BookItem) => (
+                                <BookListItem book={item} showSimilar={false}/>)
+                            ) : 
+                            <Col flex="auto">
+                                <Row align="middle" justify="center">
+                                    <LoadingOutlined style={{ fontSize: '70px' }}/>
+                                </Row>
+                            </Col>
+                            
+                        }
                     </div> 
                     <br />
-                    <Pagination onChange={changePageNumberHandler} pageSize={pageSize} total={totalElements} />              
+                    <Pagination onChange={changePageNumberHandler} pageSize={_pageSize} total={totalPages*_pageSize} />               
                 </Col>
             </Row>
         </div>
