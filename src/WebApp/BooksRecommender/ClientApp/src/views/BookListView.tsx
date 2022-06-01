@@ -24,7 +24,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState<BookItem[]>();
     let filter = emptyFilter;
-    const [_orderBy, setOrderBy] = useState("Rating");
+    let _orderBy = "Rating";
     const [loading, setLoading] = useState(false);
 
     function changePageNumberHandler(pageNumber : number, pageSize: number) {
@@ -71,8 +71,8 @@ const BookListView: React.FC<Props> = (props: Props) => {
     const filterResultsHandler = (values: any) => {
         let _filter = {
             ...emptyFilter,
-            minRating : values.ratingFilter[0],
-            maxRating : values.ratingFilter[1]
+            minRating : (values.ratingFilter === undefined) ? 0 : values.ratingFilter[0],
+            maxRating : (values.ratingFilter === undefined) ? 5 : values.ratingFilter[1]
         }
 
         if(values.titleSearch !== undefined)
@@ -107,7 +107,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
         fetchData(1);
     };
     const onOrderByChangeHandler = (value : string) => {
-        setOrderBy(value);
+        _orderBy = value;
         fetchData(1);
     }
 
