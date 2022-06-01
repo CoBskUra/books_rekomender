@@ -1,6 +1,6 @@
 import React from 'react';
 import "antd/dist/antd.css";
-import { Form, Input, Button, Checkbox, InputNumber, Slider } from "antd";
+import { Form, Input, Button, Slider } from "antd";
 
 
 interface Props {

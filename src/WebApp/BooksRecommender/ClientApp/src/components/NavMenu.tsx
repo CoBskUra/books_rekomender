@@ -1,14 +1,13 @@
-import { Component, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { NavLink } from 'reactstrap';
 import { useLocation, Link } from 'react-router-dom';
 import './NavMenu.css';
 import 'antd/dist/antd.css';
 import { UserOutlined, BookOutlined, ScheduleOutlined, HeartOutlined } from '@ant-design/icons';
 
-import { Avatar, Button, Layout, Menu, message } from 'antd';
-import { GlobalStore, globalContext } from '../reducers/GlobalStore';
+import { Button, Layout, Menu, message } from 'antd';
+import { globalContext } from '../reducers/GlobalStore';
 const { Header } = Layout;
-const { SubMenu } = Menu;
 
 export function NavMenu() {
   const [avatarClicked, setAvatarClicked] = useState(false);

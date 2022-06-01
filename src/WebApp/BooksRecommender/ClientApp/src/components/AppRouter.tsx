@@ -1,5 +1,5 @@
-import { Component, useContext } from 'react';
-import { Route, Routes, Navigate } from "react-router-dom";
+import { useContext } from 'react';
+import { Route, Routes } from "react-router-dom";
 import Books from './Books';
 import NotFound from './NotFound';
 import { globalContext } from '../reducers/GlobalStore';

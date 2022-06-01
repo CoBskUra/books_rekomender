@@ -4,12 +4,11 @@ import { FilterOutlined, LoadingOutlined } from '@ant-design/icons';
 import React, { useContext, useEffect, useState } from 'react';
 import "antd/dist/antd.css";
 import { Card, Row, Col } from "antd";
-import { ActivityIndicatorBase } from "react-native";
 import { globalContext } from "../reducers/GlobalStore";
 import BookListItem from "./BookListItem";
 import { BookItem } from "../classes/BookItem";
 import BookListFilter from "./BookListFilter";
-import { Filter, emptyFilter } from "../classes/Filter";
+import { emptyFilter } from "../classes/Filter";
 
 
 const { Title } = Typography;

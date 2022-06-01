@@ -1,6 +1,6 @@
-import React, { createContext, ReactElement, ReactNode, useEffect, useReducer, useRef } from 'react';
+import { createContext, ReactElement, ReactNode, useEffect, useReducer, useRef } from 'react';
 import Reducer from './Reducer';
-import { ContextType, GlobalStateInterface } from './Types';
+import { ContextType } from './Types';
 import { initialState }  from './initial';
 
 /**

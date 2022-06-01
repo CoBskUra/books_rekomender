@@ -1,15 +1,11 @@
-import { Col, Row, Button } from 'antd';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Col, Row } from 'antd';
+import { useContext, useEffect } from 'react';
 import {useLocation, useNavigate } from 'react-router-dom';
-import { TeamOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { GlobalStore, globalContext } from '../reducers/GlobalStore';
+import { globalContext } from '../reducers/GlobalStore';
 
-import {Typography} from "antd"
 import BookListView from '../views/BookListView';
 import ReadBookListView from '../views/ReadBookListView';
 import RecommendedBookListView from '../views/RecommendedBookListView';
-const { Title } = Typography;
-
 
 export default function Books() {
   const { globalState } = useContext(globalContext);
@@ -27,7 +23,7 @@ export default function Books() {
     if(!globalState.isUserAuthenticated) {
       navigate('/login', {replace: true});
     }
-  }, []);
+  }, [globalState.isUserAuthenticated, navigate]);
 
     return (
       <div>

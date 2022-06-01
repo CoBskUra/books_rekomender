@@ -3,15 +3,10 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 import React, { useContext, useEffect, useState } from 'react';
 import "antd/dist/antd.css";
-import { Card, Row, Col } from "antd";
-import { ActivityIndicatorBase } from "react-native";
+import { Row, Col } from "antd";
 import { globalContext } from "../reducers/GlobalStore";
 import BookListItem from "./BookListItem";
-import { exampleBooks, exampleUnreadBooks } from "../exampleData/ExampleItem";
 import { BookItem } from "../classes/BookItem";
-import BookListFilter from "./BookListFilter";
-import { validateLocaleAndSetLanguage } from "typescript";
-
 
 const { Title } = Typography;
 const { Option } = Select;
