@@ -87,7 +87,7 @@ namespace BooksRecommender.Services
             // pobiera książki które użytkownik przeczytał
             // w sumie fajnie by było jakby jeszcze były widoczne jego ratingi tych książek
             // można by zrobić dodatkową klasę BooksWithIndividualRating?
-            var books = _context.ReadBooks.Where(c => c.User.Email == email).ToList();
+            var books = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email);
             GetUserReadBooksResponse response = new();
             foreach(var book in books)
             {

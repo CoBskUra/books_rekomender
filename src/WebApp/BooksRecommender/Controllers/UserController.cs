@@ -68,9 +68,8 @@ namespace BooksRecommender.Controllers
             try
             {
                 var response = await _userService.GetUsersReadBooks(email);
-                if (books == null)
-                    return NotFound("Data not found");
-                return Ok(books); // 0 książek to nie błąd, po prostu żadnej nie przeczytał
+
+                return Ok(response); // 0 książek to nie błąd, po prostu żadnej nie przeczytał
             }
             catch (Exception e)
             {

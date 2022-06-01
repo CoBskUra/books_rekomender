@@ -46,7 +46,9 @@ const ReadBookListView: React.FC<Props> = (props: Props) => {
         setPageSize(pageSize);
         fetchData(pageNumber);
     }
-
+    useEffect(() => {
+        fetchData(1);
+    }, [])
     return (
         <div>
 
