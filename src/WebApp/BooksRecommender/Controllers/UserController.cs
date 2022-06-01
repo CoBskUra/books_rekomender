@@ -60,14 +60,14 @@ namespace BooksRecommender.Controllers
 
 
         [HttpGet]
-        [Route("read/{userId}")]
-        public async Task<IActionResult> ShowReadBooks([FromRoute] string userId)
+        [Route("read/{email}")]
+        public async Task<IActionResult> ShowReadBooks([FromRoute] string email)
         {
             List<Book> books = new List<Book>();
 
             try
             {
-                var response = await _userService.GetUsersReadBooks(userId);
+                var response = await _userService.GetUsersReadBooks(email);
                 if (books == null)
                     return NotFound("Data not found");
                 return Ok(books); // 0 książek to nie błąd, po prostu żadnej nie przeczytał
@@ -81,13 +81,13 @@ namespace BooksRecommender.Controllers
 
 
         [HttpPost]
-        [Route("rate/{userId}/{bookId}")]
-        public async Task<IActionResult> SetRating([FromRoute]string userId, [FromRoute]int bookId, [FromBody] SetRatingRequest request)
+        [Route("rate/{email}/{bookId}")]
+        public async Task<IActionResult> SetRating([FromRoute]string email, [FromRoute]int bookId, [FromBody] SetRatingRequest request)
         {
             bool done;
             try
             {
-                done = await _userService.SetBookAsRead(userId, bookId, request.rating);
+                done = await _userService.SetBookAsRead(email, bookId, request.rating);
                 if (done)
                     return Ok("Your rating has been saved");
                 else 
@@ -102,13 +102,13 @@ namespace BooksRecommender.Controllers
 
 
         [HttpPost]
-        [Route("read/{userId}/{bookId}")]
-        public async Task<IActionResult> SetAsRead([FromRoute]string userId, [FromRoute] int bookId)
+        [Route("read/{email}/{bookId}")]
+        public async Task<IActionResult> SetAsRead([FromRoute]string email, [FromRoute] int bookId)
         {
             bool done;
             try
             {
-                done = await _userService.UpdateUsersReadList(userId, bookId);
+                done = await _userService.UpdateUsersReadList(email, bookId);
                 if (done)
                     return Ok("Your read books have been updated");
                 else
@@ -123,13 +123,13 @@ namespace BooksRecommender.Controllers
 
 
         [HttpGet]
-        [Route("recommend/favorites/{userId}")]
-        public async Task<IActionResult> GetRecommendationBasedOnFavorites([FromRoute]string userId)
+        [Route("recommend/favorites/{email}")]
+        public async Task<IActionResult> GetRecommendationBasedOnFavorites([FromRoute]string email)
         {
             List<Book> books = new List<Book>();
             try
             {
-                books = await _userService.RecommendFavorites(userId);
+                books = await _userService.RecommendFavorites(email);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found"); // uznajemy że coś zawsze trzeba polecić
                 else
@@ -144,13 +144,13 @@ namespace BooksRecommender.Controllers
 
 
         [HttpGet]
-        [Route("recommend/average/{userId}")]
-        public async Task<IActionResult> GetRecommendationBasedOnAverage([FromRoute]string userId)
+        [Route("recommend/average/{email}")]
+        public async Task<IActionResult> GetRecommendationBasedOnAverage([FromRoute]string email)
         {
             List<Book> books = new List<Book>();
             try
             {
-                books = await _userService.RecommendAverage(userId);
+                books = await _userService.RecommendAverage(email);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found");
                 else
@@ -165,13 +165,13 @@ namespace BooksRecommender.Controllers
 
 
         [HttpGet]
-        [Route("recommend/basedOnBook/{userId}/{bookId}")]
-        public async Task<IActionResult> GetRecommendationBasedOnBook([FromRoute]string userId, [FromRoute]int bookId)
+        [Route("recommend/basedOnBook/{email}/{bookId}")]
+        public async Task<IActionResult> GetRecommendationBasedOnBook([FromRoute]string email, [FromRoute]int bookId)
         {
             List<Book> books = new List<Book>();
             try
             {
-                books = await _userService.RecommendBasedOnBook(userId, bookId);
+                books = await _userService.RecommendBasedOnBook(email, bookId);
                 if (books == null || books.Count == 0)
                     return NotFound("Data not found");
                 else

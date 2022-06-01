@@ -20,10 +20,10 @@ namespace BooksRecommender.Services
         public Task<GetFilteredBooksResponse> GetFilteredBooks(ShowBooksRequest request);
         public Task<Book> GetBookDetails(int bId);
         public Task<GetUserReadBooksResponse> GetUsersReadBooks(string uId);
-        public Task<bool> SetBookAsRead(string uId, int bId, double? rating);
-        public Task<bool> UpdateUsersReadList(string uId, int bId);
-        public Task<List<Book>> RecommendFavorites(string uId);
-        public Task<List<Book>> RecommendAverage(string uId);
+        public Task<bool> SetBookAsRead(string email, int bId, double? rating);
+        public Task<bool> UpdateUsersReadList(string emailuId, int bId);
+        public Task<List<Book>> RecommendFavorites(string email);
+        public Task<List<Book>> RecommendAverage(string email);
         public Task<List<Book>> RecommendBasedOnBook(string uId, int bId);
 
 
@@ -82,12 +82,12 @@ namespace BooksRecommender.Services
             // pobiera książkę o tym id
             return _context.Books.Where(c => c.Id == bId).First();
         }
-        public async Task<GetUserReadBooksResponse> GetUsersReadBooks(string uId)
+        public async Task<GetUserReadBooksResponse> GetUsersReadBooks(string email)
         {
             // pobiera książki które użytkownik przeczytał
             // w sumie fajnie by było jakby jeszcze były widoczne jego ratingi tych książek
             // można by zrobić dodatkową klasę BooksWithIndividualRating?
-            var books = _context.ReadBooks.Where(c => c.User.Id == uId).ToList();
+            var books = _context.ReadBooks.Where(c => c.User.Email == email).ToList();
             GetUserReadBooksResponse response = new();
             foreach(var book in books)
             {
@@ -95,7 +95,7 @@ namespace BooksRecommender.Services
             }
             return response;
         }
-        public async Task<bool> SetBookAsRead(string uId, int bId, double? rating)
+        public async Task<bool> SetBookAsRead(string email, int bId, double? rating)
         {
             // książce zmienić avgRating i ratingsCount
             // użytkownikowi zapisać ten rating
@@ -104,23 +104,23 @@ namespace BooksRecommender.Services
             {
                 Book = _context.Books.Where(c => c.Id == bId).First(),
                 Rating = rating,
-                User = _context.Users.Where(c => c.Id == uId).First()
+                User = _context.Users.Where(c => c.Email == email).First()
             });
             _context.SaveChanges();
             return false;
         }
-        public async Task<bool> UpdateUsersReadList(string uId, int bId)
+        public async Task<bool> UpdateUsersReadList(string email, int bId)
         {
             _context.ReadBooks.Add(new ReadBook
             {
                 Book = _context.Books.Where(c => c.Id == bId).First(),
                 Rating = null,
-                User = _context.Users.Where(c => c.Id == uId).First()
+                User = _context.Users.Where(c => c.Email == email).First()
             });
             _context.SaveChanges();
             return true;
         }
-        public async Task<List<Book>> RecommendFavorites(string uId)
+        public async Task<List<Book>> RecommendFavorites(string email)
         {
             // wywołanie odpowiedniego algorytmu pythonowego
             // używając zapewne IronPython (instalacja przez nuget packages)
@@ -132,14 +132,14 @@ namespace BooksRecommender.Services
             var classRecommending = scope.GetVariable("recommending");
             var recommenderInstance = engine.Operations.CreateInstance(classRecommending);
 
-            List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(uId);
+            List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(email);
             DataFrame bookDf = BooksToDF(favoriteBooks);
             DataFrame df = recommenderInstance.Recommend(bookDf);
             List<Book> recommendations = DFToBooks(df);
 
             return recommendations;
         }
-        public async Task<List<Book>> RecommendAverage(string uId)
+        public async Task<List<Book>> RecommendAverage(string email)
         {
             // wywołanie odpowiedniego algorytmu pythonowego, innego niż w favorites
             // używając zapewne IronPython (instalacja przez nuget packages)
@@ -158,7 +158,7 @@ namespace BooksRecommender.Services
             var classAvgBook = scope.GetVariable("averageBook");
             var avgBookInstance = engine2.Operations.CreateInstance(classAvgBook);
 
-            List<MsgReadBook> readBooks = (await GetUsersReadBooks(uId)).Books;
+            List<MsgReadBook> readBooks = (await GetUsersReadBooks(email)).Books;
             DataFrame df = BooksToDF(readBooks);
             DataFrame result = avgBookInstance.avr_book(df);
             List<Book> avgBook = DFToBooks(result);
@@ -175,7 +175,7 @@ namespace BooksRecommender.Services
 
             return recommendations;
         }
-        public async Task<List<Book>> RecommendBasedOnBook(string uId, int bId)
+        public async Task<List<Book>> RecommendBasedOnBook(string email, int bId)
         {
             // wywołanie odpowiedniego algorytmu pythonowego
             // używając zapewne IronPython (instalacja przez nuget packages)
