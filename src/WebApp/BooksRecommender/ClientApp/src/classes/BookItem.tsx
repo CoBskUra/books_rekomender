@@ -15,5 +15,6 @@ export interface BookItem {
     targetGroups: string;
     title: string;
     readByUser: boolean;
+    isFavourite?: boolean;
 }
 
