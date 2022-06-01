@@ -25,7 +25,7 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
     const [totalPages, setTotalPages] = useState<number>(1);
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState<BookItem[]>();
-    const [recommendType, setRecommendType] = useState("favorites");
+    let recommendType = ("favorites");
     const [loading, setLoading] = useState(false);
 
     function changePageNumberHandler(pageNumber : number, pageSize: number) {
@@ -51,14 +51,14 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
                 }
             )
     }
-    const onOrderByChangeHandler = (value : string) => {
-        setRecommendType(value);
+    const onRecommendTypeHandler = (value : string) => {
+        recommendType = value;
         fetchData(1);
     }
 
     useEffect(() => {
         fetchData(1);
-    }, [recommendType])
+    }, [])
 
 
     return (
@@ -71,7 +71,7 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
                     <Form.Item label="Recommend books based on" name="recommendBy">
                         <Select
                             placeholder="favourites"
-                            onChange={onOrderByChangeHandler}
+                            onChange={onRecommendTypeHandler}
                         >
                             <Option value="favourites">Favourites</Option>
                             <Option value="average">Average</Option>

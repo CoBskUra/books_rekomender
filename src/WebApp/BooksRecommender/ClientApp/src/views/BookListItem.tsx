@@ -51,7 +51,7 @@ const BookListItem: React.FC<Props> = (props: Props) => {
     const favouriteClickHandler = () => {
         let url = "/api/books/" + (favourite ? "unfavourite/" : "favourite/") + globalState.loggedUser + "/" + props.book.id;
         console.log(url);
-        fetch(url, { method: 'POST' }).then(response => response.json()).then((data) => {}, (error) => {console.error(error);}            )
+        fetch(url, { method: 'POST' });
         setFavourite(!favourite);
     }
     function round(value : number, step : number = 0.5) {
