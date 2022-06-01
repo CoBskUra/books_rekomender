@@ -1,6 +1,6 @@
 import React from 'react';
 import "antd/dist/antd.css";
-import { Form, Input, Button, Checkbox, InputNumber } from "antd";
+import { Form, Input, Button, Slider } from "antd";
 
 
 interface Props {
@@ -18,8 +18,20 @@ const BookListFilter: React.FC<Props> = (props: Props) => {
                 <Input placeholder="Title" />
             </Form.Item>
 
-            <Form.Item valuePropName="checked" name="displayRead" initialValue={true}>
-                <Checkbox>Display read books</Checkbox>
+            <Form.Item label="Search by author" name="authorSearch">
+                <Input placeholder="Author" />
+            </Form.Item>
+
+            <Form.Item label="Search by tag" name="tagSearch">
+                <Input placeholder="Tag" />
+            </Form.Item>
+
+            <Form.Item label="Search by genre" name="genreSearch">
+                <Input placeholder="Genre" />
+            </Form.Item>
+
+            <Form.Item label="Filter books by rating" name="ratingFilter">
+                <Slider range defaultValue={[0, 5]} disabled={false} max={5} step={0.5} />
             </Form.Item>
 
             <Form.Item>

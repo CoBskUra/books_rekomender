@@ -11,7 +11,7 @@ interface Props {
 
 export default function Login(props : Props) {
     const [form] = Form.useForm();
-    const { globalState, dispatch } = useContext(globalContext);
+    const { dispatch } = useContext(globalContext);
     const navigate = useNavigate();
     const [userNotFound, setUserNotFound] = useState(false);
 
@@ -29,11 +29,11 @@ export default function Login(props : Props) {
     }
 
     const demoLogin = (user : any) => {
-        return (user.email === "user@book.com" && user.password === "zaq1@WSX")
+        return (user.email === "user@book.com" && user.password === "zaq1@WSX") || (user.email === "admin@book.com" && user.password === "admin") 
     }
     const loginHandler = (user : any) => {
         if(demoLogin(user))
-            successfullLogIn(user, "Bearer " + "abc");
+            successfullLogIn(user, "Bearer ");
         else {
             setUserNotFound(true);
             console.log(user);
@@ -70,7 +70,7 @@ export default function Login(props : Props) {
                                 required: true,
                                 message: 'Please input your password!',
                             },
-                            ({ }) => ({
+                            () => ({
                                 validator(_: any, value: String) {
                                 if (passwordValidate(value)) {
                                     return Promise.resolve();

@@ -15,6 +15,12 @@ code {
 
 .site-layout-content {
   min-height: 280px;
+  max-width: 1000px;
+  padding: 24px;
+  background: #fff;
+}
+.site-layout-content2 {
+  min-height: 280px;
   padding: 24px;
   background: #fff;
 }

@@ -1,14 +1,13 @@
-import { Component, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { NavLink } from 'reactstrap';
 import { useLocation, Link } from 'react-router-dom';
 import './NavMenu.css';
 import 'antd/dist/antd.css';
 import { UserOutlined, BookOutlined, ScheduleOutlined, HeartOutlined } from '@ant-design/icons';
 
-import { Avatar, Button, Layout, Menu, message } from 'antd';
-import { GlobalStore, globalContext } from '../reducers/GlobalStore';
+import { Button, Layout, Menu, message } from 'antd';
+import { globalContext } from '../reducers/GlobalStore';
 const { Header } = Layout;
-const { SubMenu } = Menu;
 
 export function NavMenu() {
   const [avatarClicked, setAvatarClicked] = useState(false);
@@ -19,7 +18,8 @@ export function NavMenu() {
     let path = location.pathname;
     if(path.includes('read')) return ['ReadBooks'];
     if(path.includes('recommended')) return ['RecommendedBooks'];
-    return ['Books'];
+    if(path.includes('all')) return ['Books'];
+    return ['None'];
   }
   const navigateTo_IfLoggedIn = (to : string) => {
     return globalState.isUserAuthenticated ? to : "/login"

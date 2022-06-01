@@ -1,17 +1,20 @@
 export interface BookItem {
-    id: number;
-    title: string;
-    authors: string;
-    publisher: string;
+    authors: string[];
+    avgRating: number;
+    country: string;
+    csvId: number;
     genres: string[];
-    targetGroups: string;
-    tags: string[];
-    pagesNum: number;
+    id: number;
     languageCode: string;
-    countryOfOrigin: string;
-    publicationDate: number;
-    averageRating: number;
-    ratingsCount: number;
     monthRentals: number;
+    numPages: number;
+    publicationDate: string;
+    publisher: string;
+    ratingsCount: number;
+    tags: string[];
+    targetGroups: string;
+    title: string;
     readByUser: boolean;
+    isFavourite?: boolean;
 }
+

@@ -1,11 +1,6 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Table, Space, Button, Input, Row, Modal, Form, Rate } from 'antd';
-import {Typography} from "antd"
-import { BookItem } from '../classes/BookItem';
-
-const { Title } = Typography;
-const { Search } = Input;
+import {  Row, Modal, Rate } from 'antd';
 
 interface Props {
     visible : boolean,
@@ -17,9 +12,6 @@ interface Props {
 export const RateTheBookModal: React.FC<Props> = (props: Props) => {
     const [ratingValue, setRatingValue] = useState<number>();
 
-    const passwordValidate = (password : String) => {
-        return password.match(/^(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/);
-    }
     const ratingChangeHandle = (rating : number) => {
         setRatingValue(rating);
     } 

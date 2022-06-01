@@ -1,17 +1,19 @@
 {
     "id": 1,
+    "csvId": 1,
     "title": "Harry Potter and the Half-Blood Prince (Harry Potter  #6)",
-    "authors": "J.K. Rowling/Mary GrandPré",
+    "authors": ["J.K. Rowling/Mary GrandPré"],
     "publisher": "Scholastic Inc.",
     "genres": ["travel", "magical_realism"],
     "targetGroups": "single_mothers",
     "tags": ["mafia", "egyptian_mythology", "angels", "superhero", "archery", "vikings", "greek_mythology"],
-    "pagesNum": 652,
+    "numPages": 652,
     "languageCode": "eng",
-    "countryOfOrigin": "France",
-    "publicationDate": 2006,
-    "averageRating": 4.57,
+    "country": "France",
+    "publicationDate": "2006",
+    "avgRating": 4.57,
     "ratingsCount": 2095690,
     "monthRentals": 161206,
     "readByUser": false
   }
+
