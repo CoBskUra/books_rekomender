@@ -87,9 +87,6 @@ namespace BooksRecommender.Services
         }
         public async Task<GetUserReadBooksResponse> GetUsersReadBooks(string email)
         {
-            // pobiera książki które użytkownik przeczytał
-            // w sumie fajnie by było jakby jeszcze były widoczne jego ratingi tych książek
-            // można by zrobić dodatkową klasę BooksWithIndividualRating?
             var books = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email);
             GetUserReadBooksResponse response = new();
             foreach (var book in books)
@@ -125,90 +122,27 @@ namespace BooksRecommender.Services
         }
         public async Task<List<Book>> RecommendFavorites(string email)
         {
-            List<Book> recommendations = new List<Book>();
-            string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
-            string pyFile = "C:\\Users\\48695\\Source\\Repos\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
-
-            ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = exeFile;
-            start.ArgumentList.Add(pyFile);
-
             var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true).ToList(); // serio na podstawie ulubionych
             var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
             if (favoriteBooks == null || favoriteBooks.Count == 0)
                 favoriteBooks = readBooks.OrderBy(b => b.Rating).Reverse().ToList().GetRange(0, 10);
-
-            foreach (var b in favoriteBooks)
-            {
-                start.ArgumentList.Add((b.Book.Id).ToString());
-                start.ArgumentList.Add(b.Book.Title);
-                start.ArgumentList.Add(b.Book.Authors);
-                start.ArgumentList.Add(b.Book.Publisher);
-                start.ArgumentList.Add(b.Book.Genres);
-                start.ArgumentList.Add(b.Book.TargetGroups);
-                start.ArgumentList.Add(b.Book.Tags);
-                start.ArgumentList.Add((b.Book.NumPages).ToString());
-                start.ArgumentList.Add(b.Book.LanguageCode);
-                start.ArgumentList.Add(b.Book.Country);
-                start.ArgumentList.Add((b.Book.PublicationDate.Year).ToString());
-                start.ArgumentList.Add((b.Book.AvgRating).ToString());
-                start.ArgumentList.Add((b.Book.RatingsCount).ToString());
-                start.ArgumentList.Add((b.Book.MonthRentals).ToString());
-            }
-
-            start.UseShellExecute = false;
-            start.CreateNoWindow = true;
-            start.RedirectStandardOutput = true;
-            start.RedirectStandardError = true;
-            using (Process process = Process.Start(start))
-            {
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    string result = reader.ReadToEnd();
-                    var list = ReadCsvFile();
-                    var x = AddSimilaritiesToBooks(result, list);
-                    x = x.OrderBy(x => x.similarity).ToList();
-                    x.Reverse();
-                    foreach (var y in x)
-                    {
-                        bool read = false;
-                        foreach (var r in readBooks)
-                        {
-                            if (r.Book.Id == y.bk.Id)
-                            {
-                                read = true;
-                                break;
-                            }
-                        }
-                        if (!read)
-                        {
-                            recommendations.Add(y.bk);
-                            if (recommendations.Count >= 5)
-                                break;
-                        }
-                    }
-                }
-            }
-            return recommendations;
+            List<Book> books = new List<Book>();
+            foreach (var fb in favoriteBooks)
+                books.Add(fb.Book);
+            return Recommend(books, email);
         }
         public async Task<List<Book>> RecommendAverage(string email)
         {
-            List<Book> recommendations = new List<Book>();
-            string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
-            string pyFile = "C:\\Users\\48695\\Source\\Repos\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
+            Book avgBook = new Book();
 
-            ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = exeFile;
-            start.ArgumentList.Add(pyFile);
-
-            var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true).ToList(); // serio na podstawie ulubionych
             var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
-            if (favoriteBooks == null || favoriteBooks.Count == 0)
-                favoriteBooks = readBooks.OrderBy(b => b.Rating).Reverse().ToList().GetRange(0, 10);
-
-            foreach (var b in favoriteBooks)
+            List<Book> books = new List<Book>();
+            int i = (readBooks.Count >= 10) ? 10 : readBooks.Count;
+            readBooks = readBooks.OrderBy(b => b.Rating).Reverse().ToList().GetRange(0, i);
+            foreach (var b in readBooks)
             {
-                start.ArgumentList.Add((b.Book.Id).ToString());
+                books.Add(b.Book);
+                /*start.ArgumentList.Add((b.Book.Id).ToString());
                 start.ArgumentList.Add(b.Book.Title);
                 start.ArgumentList.Add(b.Book.Authors);
                 start.ArgumentList.Add(b.Book.Publisher);
@@ -221,78 +155,21 @@ namespace BooksRecommender.Services
                 start.ArgumentList.Add((b.Book.PublicationDate.Year).ToString());
                 start.ArgumentList.Add((b.Book.AvgRating).ToString());
                 start.ArgumentList.Add((b.Book.RatingsCount).ToString());
-                start.ArgumentList.Add((b.Book.MonthRentals).ToString());
+                start.ArgumentList.Add((b.Book.MonthRentals).ToString());*/
             }
 
-            start.UseShellExecute = false;
-            start.CreateNoWindow = true;
-            start.RedirectStandardOutput = true;
-            start.RedirectStandardError = true;
-            using (Process process = Process.Start(start))
-            {
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    string result = reader.ReadToEnd();
-                    var list = ReadCsvFile();
-                    var x = AddSimilaritiesToBooks(result, list);
-                    x = x.OrderBy(x => x.similarity).ToList();
-                    x.Reverse();
-                    foreach (var y in x)
-                    {
-                        bool read = false;
-                        foreach (var r in readBooks)
-                        {
-                            if (r.Book.Id == y.bk.Id)
-                            {
-                                read = true;
-                                break;
-                            }
-                        }
-                        if (!read)
-                        {
-                            recommendations.Add(y.bk);
-                            if (recommendations.Count >= 5)
-                                break;
-                        }
-                    }
-                }
-            }
-            return recommendations;
-            // wywołanie odpowiedniego algorytmu pythonowego, innego niż w favorites
-            // używając zapewne IronPython (instalacja przez nuget packages)
-
-            /*var engine = Python.CreateEngine();
-            var source = engine.CreateScriptSourceFromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PythonCode\\Recomender.py"));
-            var scope = engine.CreateScope();
-            source.Execute(scope);
-            var classRecommending = scope.GetVariable("recommending");
-            var recommenderInstance = engine.Operations.CreateInstance(classRecommending);
-
-            var engine2 = Python.CreateEngine(); //potrzebne?
-            var source2 = engine2.CreateScriptSourceFromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PythonCode\\Average_Book.py"));
-            var scope2 = engine2.CreateScope();
-            source2.Execute(scope2);
-            var classAvgBook = scope.GetVariable("averageBook");
-            var avgBookInstance = engine2.Operations.CreateInstance(classAvgBook);
-
-            List<MsgReadBook> readBooks = (await GetUsersReadBooks(email)).Books;
-            DataFrame df = BooksToDF(readBooks);
-            DataFrame result = avgBookInstance.avr_book(df);
-            List<Book> avgBook = DFToBooks(result);
-            Book book = avgBook.First(); // powinna być i tak tylko jedna pozycja
-            ReadBook readBook = new ReadBook
-            {
-                Book = book
-            };
-            MsgReadBook bk = new MsgReadBook(readBook);
-            List<MsgReadBook> books = new List<MsgReadBook> { bk };
-            DataFrame bookDf = BooksToDF(books);
-            DataFrame df2 = recommenderInstance.Recommend(bookDf);
-            List<Book> recommendations = DFToBooks(df2);
-
-            return recommendations;*/
+            avgBook = GetAverageBook(books);
+            return Recommend(new List<Book> { avgBook }, email);
         }
         public async Task<List<Book>> RecommendBasedOnBook(string email, int bId)
+        {
+            Book bk = _context.Books.Where(b => b.CsvId == bId).First();
+            List<Book> bkInList = new List<Book> { bk };
+            return Recommend(bkInList, email);
+        }
+
+
+        private List<Book> Recommend(List<Book> list, string email)
         {
             List<Book> recommendations = new List<Book>();
             string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
@@ -302,12 +179,9 @@ namespace BooksRecommender.Services
             start.FileName = exeFile;
             start.ArgumentList.Add(pyFile);
 
-            Book bk = _context.Books.Where(b => b.CsvId == bId).First();
-            List<Book> bkInList = new List<Book> { bk };
-            
             var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
 
-            foreach (var b in bkInList)
+            foreach (var b in list)
             {
                 start.ArgumentList.Add((b.Id).ToString());
                 start.ArgumentList.Add(b.Title);
@@ -334,8 +208,8 @@ namespace BooksRecommender.Services
                 using (StreamReader reader = process.StandardOutput)
                 {
                     string result = reader.ReadToEnd();
-                    var list = ReadCsvFile();
-                    var x = AddSimilaritiesToBooks(result, list);
+                    var listAll = ReadCsvFile();
+                    var x = AddSimilaritiesToBooks(result, listAll);
                     x = x.OrderBy(x => x.similarity).ToList();
                     x.Reverse();
                     foreach (var y in x)
@@ -360,7 +234,6 @@ namespace BooksRecommender.Services
             }
             return recommendations;
         }
-
         private string MultipleToOneString(string[] list)
         {
             string result = "";
@@ -391,22 +264,31 @@ namespace BooksRecommender.Services
         {
             List<string> result = new List<string>();
             int c;
-            bool oneAuthor = (str[0] == '\"') ? false : true;
+            bool oneAuthor = (str.Contains(",")) ? false : true;
             if (!oneAuthor)
-                str = str.Substring(2); // bez "[
+            {
+                if (str.Contains("\""))
+                    str = str.Substring(2);
+                else
+                    str = str.Substring(1);
+            }// bez "[
             else
-                str = str.Substring(1);
+            {
+                str = str.Substring(str.IndexOf("\'") + 1);
+                result.Add(str.Substring(0, str.IndexOf("\'")));
+                return result.ToArray();
+            }
             while (str.Length != 0)
             {
                 string tmp;
                 c = str.IndexOf('\'');
                 if (c != -1) // jest element
                 {
-                    str = str.Substring(1); // bez otwierającego '
+                    str = str.Substring(c + 1); // bez otwierającego '
                     c = str.IndexOf('\''); // zamykający '
                     tmp = str.Substring(0, c);
                     result.Add(tmp);
-                    str = str.Substring(c + 3);// chyba?
+                    str = str.Substring(c + 2);// chyba?
                 }
                 else // koniec
                 {
@@ -632,6 +514,230 @@ namespace BooksRecommender.Services
             int i = books.Count >= 10 ? 10 : books.Count;
             books = books.GetRange(0, i);
             return books;
+        }
+
+        private Book GetAverageBook(List<Book> books)
+        {
+            Book result = new Book();
+
+            // id i title nie są ważne
+            result.Id = 0;
+            result.CsvId = 0;
+            result.Title = "Average Book";
+
+            Dictionary<string, int> publishers = new Dictionary<string, int>();
+            Dictionary<string, int> targets = new Dictionary<string, int>();
+            Dictionary<string, int> lang = new Dictionary<string, int>();
+            Dictionary<string, int> country = new Dictionary<string, int>();
+            Dictionary<string, int> genres = new Dictionary<string, int>();
+            Dictionary<string, int> authors = new Dictionary<string, int>();
+            Dictionary<string, int> tags = new Dictionary<string, int>();
+            int sumPages = 0;
+            int sumYear = 0;
+            double sumRating = 0;
+            int sumRatingCount = 0;
+            int sumRentals = 0;
+            int n = books.Count();
+
+            foreach (Book b in books)
+            {
+                List<string> tmp = new List<string>();
+                tmp = OneToMultipleString(b.Genres).ToList();
+                foreach (var x in tmp)
+                {
+                    if (genres.ContainsKey(x))
+                        genres[x]++;
+                    else
+                        genres.Add(x, 1);
+                }
+                tmp = new List<string>();
+                tmp = OneToMultipleString(b.Authors).ToList();
+                foreach (var x in tmp)
+                {
+                    if (authors.ContainsKey(x))
+                        authors[x]++;
+                    else
+                        authors.Add(x, 1);
+                }
+                tmp = new List<string>();
+                tmp = OneToMultipleString(b.Tags).ToList();
+                foreach (var x in tmp)
+                {
+                    if (tags.ContainsKey(x))
+                        tags[x]++;
+                    else
+                        tags.Add(x, 1);
+                }
+
+                sumPages += b.NumPages;
+                sumYear += b.PublicationDate.Year;
+                sumRating += b.AvgRating;
+                sumRatingCount += b.RatingsCount;
+                sumRentals += b.MonthRentals;
+
+                if (publishers.ContainsKey(b.Publisher))
+                    publishers[b.Publisher]++;
+                else
+                    publishers.Add(b.Publisher, 1);
+
+                if (targets.ContainsKey(b.TargetGroups))
+                    targets[b.TargetGroups]++;
+                else
+                    targets.Add(b.TargetGroups, 1);
+
+                if (lang.ContainsKey(b.LanguageCode))
+                    lang[b.LanguageCode]++;
+                else
+                    lang.Add(b.LanguageCode, 1);
+
+                if (country.ContainsKey(b.Country))
+                    country[b.Country]++;
+                else
+                    country.Add(b.Country, 1);
+            }
+
+            result.Publisher = publishers.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+            result.TargetGroups = targets.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+            result.LanguageCode = lang.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+            result.Country = country.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+
+            result.NumPages = sumPages / n;
+            result.MonthRentals = sumRentals / n;
+            result.AvgRating = sumRating / n;
+            result.PublicationDate = new DateTime(sumYear / n, 10, 10);
+            result.RatingsCount = sumRatingCount / n;
+
+            var list = authors.ToList();
+            List<string> listSingle = new List<string>();
+            list.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            foreach (var v in list)
+                listSingle.Add(v.Key);
+            int i = (listSingle.Count() >= 5) ? 5 : listSingle.Count();
+            result.Authors = MultipleToOneString(listSingle.GetRange(0, i).ToArray());
+
+            list = genres.ToList();
+            listSingle = new List<string>();
+            list.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            foreach (var v in list)
+                listSingle.Add(v.Key);
+            i = (listSingle.Count() >= 5) ? 5 : listSingle.Count();
+            result.Genres = MultipleToOneString(listSingle.GetRange(0, i).ToArray());
+
+            list = tags.ToList();
+            listSingle = new List<string>();
+            list.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            foreach (var v in list)
+                listSingle.Add(v.Key);
+            i = (listSingle.Count() >= 5) ? 5 : listSingle.Count();
+            result.Tags = MultipleToOneString(listSingle.GetRange(0, i).ToArray());
+
+            return result;
+        }
+        private Book StringToBook(string res)
+        {
+            Book result = new Book();
+
+            // id
+            var ind = res.IndexOf("bookID");
+            res = res.Substring(ind + 6);
+            int offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.CsvId = Int32.Parse(res.Substring(offset, ind - offset));
+            result.Id = result.CsvId;
+
+            // title
+            ind = res.IndexOf("title");
+            res = res.Substring(ind + 5);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.Title = res.Substring(offset, ind - offset);
+
+            //authors
+            ind = res.IndexOf("authors");
+            res = res.Substring(ind + 7);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.Authors = res.Substring(offset, ind - offset);
+
+            //publisher
+            ind = res.IndexOf("publisher");
+            res = res.Substring(ind + 9);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.Publisher = res.Substring(offset, ind - offset);
+
+            //Genres
+            ind = res.IndexOf("Genres");
+            res = res.Substring(ind + 6);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.Genres = res.Substring(offset, ind - offset);
+
+            //target_groups
+            ind = res.IndexOf("target_groups");
+            res = res.Substring(ind + 13);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.TargetGroups = res.Substring(offset, ind - offset);
+
+            //tags
+            ind = res.IndexOf("tags");
+            res = res.Substring(ind + 4);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.Tags = res.Substring(offset, ind - offset);
+
+            //num_pages
+            ind = res.IndexOf("num_pages");
+            res = res.Substring(ind + 9);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            //var tmp = res.Substring(offset, ind - offset);
+            result.NumPages = (int)Double.Parse(res.Substring(offset, ind - offset));
+
+            //language_code
+            ind = res.IndexOf("language_code");
+            res = res.Substring(ind + 13);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.LanguageCode = res.Substring(offset, ind - offset);
+
+            //country_of_origin
+            ind = res.IndexOf("country_of_origin");
+            res = res.Substring(ind + 17);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.Country = res.Substring(offset, ind - offset);
+
+            //publication_date
+            ind = res.IndexOf("publication_date");
+            res = res.Substring(ind + 17);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.PublicationDate = new DateTime((int)Double.Parse(res.Substring(offset, ind - offset)), 10, 10);
+
+            //average_rating
+            ind = res.IndexOf("average_rating");
+            res = res.Substring(ind + 14);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.AvgRating = Double.Parse(res.Substring(offset, ind - offset));
+
+            //ratings_count
+            ind = res.IndexOf("ratings_count");
+            res = res.Substring(ind + 13);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.RatingsCount = (int)Double.Parse(res.Substring(offset, ind - offset));
+
+            //month_rentals
+            ind = res.IndexOf("month_rentals");
+            res = res.Substring(ind + 13);
+            offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+            ind = res.IndexOf("\r\n");
+            result.MonthRentals = (int)Double.Parse(res.Substring(offset, ind - offset));
+
+            return result;
         }
 
         public async Task<bool> SetBookAsFavourite(string email, int bId)
