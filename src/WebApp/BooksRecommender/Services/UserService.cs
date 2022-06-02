@@ -153,27 +153,29 @@ namespace BooksRecommender.Services
             start.FileName = exeFile;
             start.ArgumentList.Add(pyFile);
 
-            List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(email);
-            List<MsgReadBook> readBooks = (await GetUsersReadBooks(email)).Books;
+            var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true); // serio na podstawie ulubionych
+            var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email);
+            //List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(email);
+            //List<MsgReadBook> readBooks = (await GetUsersReadBooks(email)).Books;
             //readBooks = readBooks.OrderBy(r => r.id).ToList();
-            DataFrame bookDf = BooksToDF(favoriteBooks);
+            //DataFrame bookDf = BooksToDF(favoriteBooks);
 
             foreach (var b in favoriteBooks)
             {
-                start.ArgumentList.Add((b.id).ToString());
-                start.ArgumentList.Add(b.title);
-                start.ArgumentList.Add(MultipleToOneString(b.authors));
-                start.ArgumentList.Add(b.publisher);
-                start.ArgumentList.Add(MultipleToOneString(b.genres));
-                start.ArgumentList.Add(b.targetGroups);
-                start.ArgumentList.Add(MultipleToOneString(b.tags));
-                start.ArgumentList.Add((b.numPages).ToString());
-                start.ArgumentList.Add(b.languageCode);
-                start.ArgumentList.Add(b.country);
-                start.ArgumentList.Add((b.publicationDate.Year).ToString());
-                start.ArgumentList.Add((b.avgRating).ToString());
-                start.ArgumentList.Add((b.ratingsCount).ToString());
-                start.ArgumentList.Add((b.monthRentals).ToString());
+                start.ArgumentList.Add((b.Book.Id).ToString());
+                start.ArgumentList.Add(b.Book.Title);
+                start.ArgumentList.Add(b.Book.Authors);
+                start.ArgumentList.Add(b.Book.Publisher);
+                start.ArgumentList.Add(b.Book.Genres);
+                start.ArgumentList.Add(b.Book.TargetGroups);
+                start.ArgumentList.Add(b.Book.Tags);
+                start.ArgumentList.Add((b.Book.NumPages).ToString());
+                start.ArgumentList.Add(b.Book.LanguageCode);
+                start.ArgumentList.Add(b.Book.Country);
+                start.ArgumentList.Add((b.Book.PublicationDate.Year).ToString());
+                start.ArgumentList.Add((b.Book.AvgRating).ToString());
+                start.ArgumentList.Add((b.Book.RatingsCount).ToString());
+                start.ArgumentList.Add((b.Book.MonthRentals).ToString());
             }
 
             start.UseShellExecute = false;
@@ -183,17 +185,16 @@ namespace BooksRecommender.Services
             bool returnn = false;
             using (Process process = Process.Start(start))
             {
-                //return new List<Book> { testBook };
                 using (StreamReader reader = process.StandardOutput)
                 {
-                    //return new List<Book> { testBook };
                     string result = reader.ReadToEnd();
-                    return new List<Book> { testBook };
-                    if (result.Length != 0)
-                        returnn = true;
+                    //return new List<Book> { testBook };
+                    //if (result.Length != 0)
+                        //return new List<Book> { testBook };
                     var list = ReadCsvFile();
                     var x = AddSimilaritiesToBooks(result, list);
-
+                    //if (x != null && x.Count != 0)
+                        //return new List<Book> { testBook };
                     //Console.WriteLine(x.Count);
                     x = x.OrderBy(x => x.similarity).ToList();
                     x.Reverse();
@@ -202,7 +203,7 @@ namespace BooksRecommender.Services
                         bool read = false;
                         foreach (var r in readBooks)
                         {
-                            if (r.id == y.bk.Id)
+                            if (r.Book.Id == y.bk.Id)
                             {
                                 read = true;
                                 break;
@@ -217,7 +218,7 @@ namespace BooksRecommender.Services
                     }
                 }
             }
-
+            return recommendations;
             
                 /*Book testBook = new Book
                 {
