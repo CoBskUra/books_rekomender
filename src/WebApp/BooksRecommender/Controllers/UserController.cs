@@ -169,15 +169,15 @@ namespace BooksRecommender.Controllers
             try
             {
                 books = await _userService.RecommendFavorites(email);
-                //if (books == null || books.Count == 0)
-                    //return NotFound("Data not found"); // uznajemy że coś zawsze trzeba polecić
-                //else
+                if (books == null || books.Count == 0)
+                    return NotFound("Data not found"); // uznajemy że coś zawsze trzeba polecić
+                else
                     return Ok(books);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                return BadRequest("Something went wrong");
+                return BadRequest(e.Message);
             }
         }
 
