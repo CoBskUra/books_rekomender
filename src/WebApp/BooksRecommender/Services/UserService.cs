@@ -125,40 +125,18 @@ namespace BooksRecommender.Services
         }
         public async Task<List<Book>> RecommendFavorites(string email)
         {
-            Book testBook = new Book
-            {
-                Id = 1,
-                CsvId = 1,
-                Authors = "Ala Makota",
-                AvgRating = 5.0,
-                Country = "Polska",
-                Genres = "adventure",
-                LanguageCode = "pl",
-                MonthRentals = 10,
-                NumPages = 120,
-                PublicationDate = new DateTime(2000, 10, 10),
-                Publisher = "wydawnictwo",
-                RatingsCount = 1902,
-                Tags = "fajne",
-                TargetGroups = "my",
-                Title = "Jezu nie wiem jaki tytul"
-            };
-            //return new List<Book> { testBook };
             List<Book> recommendations = new List<Book>();
             string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
             string pyFile = "C:\\Users\\48695\\Source\\Repos\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
-
 
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = exeFile;
             start.ArgumentList.Add(pyFile);
 
-            var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true); // serio na podstawie ulubionych
-            var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email);
-            //List<MsgReadBook> favoriteBooks = await GetFavoriteBooks(email);
-            //List<MsgReadBook> readBooks = (await GetUsersReadBooks(email)).Books;
-            //readBooks = readBooks.OrderBy(r => r.id).ToList();
-            //DataFrame bookDf = BooksToDF(favoriteBooks);
+            var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true).ToList(); // serio na podstawie ulubionych
+            var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
+            if (favoriteBooks == null || favoriteBooks.Count == 0)
+                favoriteBooks = readBooks.OrderBy(b => b.Rating).Reverse().ToList().GetRange(0, 10);
 
             foreach (var b in favoriteBooks)
             {
@@ -182,20 +160,13 @@ namespace BooksRecommender.Services
             start.CreateNoWindow = true;
             start.RedirectStandardOutput = true;
             start.RedirectStandardError = true;
-            bool returnn = false;
             using (Process process = Process.Start(start))
             {
                 using (StreamReader reader = process.StandardOutput)
                 {
                     string result = reader.ReadToEnd();
-                    //return new List<Book> { testBook };
-                    //if (result.Length != 0)
-                        //return new List<Book> { testBook };
                     var list = ReadCsvFile();
                     var x = AddSimilaritiesToBooks(result, list);
-                    //if (x != null && x.Count != 0)
-                        //return new List<Book> { testBook };
-                    //Console.WriteLine(x.Count);
                     x = x.OrderBy(x => x.similarity).ToList();
                     x.Reverse();
                     foreach (var y in x)
@@ -219,38 +190,78 @@ namespace BooksRecommender.Services
                 }
             }
             return recommendations;
-            
-                /*Book testBook = new Book
-                {
-                    Id = 1,
-                    CsvId = 1,
-                    Authors = "Ala Makota",
-                    AvgRating = 5.0,
-                    Country = "Polska",
-                    Genres = "adventure",
-                    LanguageCode = "pl",
-                    MonthRentals = 10,
-                    NumPages = 120,
-                    PublicationDate = new DateTime(2000, 10, 10),
-                    Publisher = "wydawnictwo",
-                    RatingsCount = 1902,
-                    Tags = "fajne",
-                    TargetGroups = "my",
-                    Title = "Jezu nie wiem jaki tytul"
-                };
-                return new List<Book> { testBook };*/
-                //List<Book> recommendations = new List<Book> { testBook };
-            
-
-
-            //return recommendations;
         }
         public async Task<List<Book>> RecommendAverage(string email)
         {
+            List<Book> recommendations = new List<Book>();
+            string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
+            string pyFile = "C:\\Users\\48695\\Source\\Repos\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
+
+            ProcessStartInfo start = new ProcessStartInfo();
+            start.FileName = exeFile;
+            start.ArgumentList.Add(pyFile);
+
+            var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true).ToList(); // serio na podstawie ulubionych
+            var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
+            if (favoriteBooks == null || favoriteBooks.Count == 0)
+                favoriteBooks = readBooks.OrderBy(b => b.Rating).Reverse().ToList().GetRange(0, 10);
+
+            foreach (var b in favoriteBooks)
+            {
+                start.ArgumentList.Add((b.Book.Id).ToString());
+                start.ArgumentList.Add(b.Book.Title);
+                start.ArgumentList.Add(b.Book.Authors);
+                start.ArgumentList.Add(b.Book.Publisher);
+                start.ArgumentList.Add(b.Book.Genres);
+                start.ArgumentList.Add(b.Book.TargetGroups);
+                start.ArgumentList.Add(b.Book.Tags);
+                start.ArgumentList.Add((b.Book.NumPages).ToString());
+                start.ArgumentList.Add(b.Book.LanguageCode);
+                start.ArgumentList.Add(b.Book.Country);
+                start.ArgumentList.Add((b.Book.PublicationDate.Year).ToString());
+                start.ArgumentList.Add((b.Book.AvgRating).ToString());
+                start.ArgumentList.Add((b.Book.RatingsCount).ToString());
+                start.ArgumentList.Add((b.Book.MonthRentals).ToString());
+            }
+
+            start.UseShellExecute = false;
+            start.CreateNoWindow = true;
+            start.RedirectStandardOutput = true;
+            start.RedirectStandardError = true;
+            using (Process process = Process.Start(start))
+            {
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    string result = reader.ReadToEnd();
+                    var list = ReadCsvFile();
+                    var x = AddSimilaritiesToBooks(result, list);
+                    x = x.OrderBy(x => x.similarity).ToList();
+                    x.Reverse();
+                    foreach (var y in x)
+                    {
+                        bool read = false;
+                        foreach (var r in readBooks)
+                        {
+                            if (r.Book.Id == y.bk.Id)
+                            {
+                                read = true;
+                                break;
+                            }
+                        }
+                        if (!read)
+                        {
+                            recommendations.Add(y.bk);
+                            if (recommendations.Count >= 5)
+                                break;
+                        }
+                    }
+                }
+            }
+            return recommendations;
             // wywołanie odpowiedniego algorytmu pythonowego, innego niż w favorites
             // używając zapewne IronPython (instalacja przez nuget packages)
 
-            var engine = Python.CreateEngine();
+            /*var engine = Python.CreateEngine();
             var source = engine.CreateScriptSourceFromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PythonCode\\Recomender.py"));
             var scope = engine.CreateScope();
             source.Execute(scope);
@@ -279,26 +290,74 @@ namespace BooksRecommender.Services
             DataFrame df2 = recommenderInstance.Recommend(bookDf);
             List<Book> recommendations = DFToBooks(df2);
 
-            return recommendations;
+            return recommendations;*/
         }
         public async Task<List<Book>> RecommendBasedOnBook(string email, int bId)
         {
-            // wywołanie odpowiedniego algorytmu pythonowego
-            // używając zapewne IronPython (instalacja przez nuget packages)
-            var engine = Python.CreateEngine();
-            var source = engine.CreateScriptSourceFromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PythonCode\\Recomender.py"));
-            var scope = engine.CreateScope();
-            source.Execute(scope);
-            var classRecommending = scope.GetVariable("recommending");
-            var recommenderInstance = engine.Operations.CreateInstance(classRecommending);
+            List<Book> recommendations = new List<Book>();
+            string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
+            string pyFile = "C:\\Users\\48695\\Source\\Repos\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
 
-            Book book = await _context.Books.Where(b => b.Id == bId).FirstAsync();
-            MsgReadBook bk = new MsgReadBook(new ReadBook { Book = book });
-            List<MsgReadBook> books = new List<MsgReadBook> { bk };
-            DataFrame bookDf = BooksToDF(books);
-            DataFrame df = recommenderInstance.Recommend(bookDf);
-            List<Book> recommendations = DFToBooks(df);
+            ProcessStartInfo start = new ProcessStartInfo();
+            start.FileName = exeFile;
+            start.ArgumentList.Add(pyFile);
 
+            Book bk = _context.Books.Where(b => b.CsvId == bId).First();
+            List<Book> bkInList = new List<Book> { bk };
+            
+            var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
+
+            foreach (var b in bkInList)
+            {
+                start.ArgumentList.Add((b.Id).ToString());
+                start.ArgumentList.Add(b.Title);
+                start.ArgumentList.Add(b.Authors);
+                start.ArgumentList.Add(b.Publisher);
+                start.ArgumentList.Add(b.Genres);
+                start.ArgumentList.Add(b.TargetGroups);
+                start.ArgumentList.Add(b.Tags);
+                start.ArgumentList.Add((b.NumPages).ToString());
+                start.ArgumentList.Add(b.LanguageCode);
+                start.ArgumentList.Add(b.Country);
+                start.ArgumentList.Add((b.PublicationDate.Year).ToString());
+                start.ArgumentList.Add((b.AvgRating).ToString());
+                start.ArgumentList.Add((b.RatingsCount).ToString());
+                start.ArgumentList.Add((b.MonthRentals).ToString());
+            }
+
+            start.UseShellExecute = false;
+            start.CreateNoWindow = true;
+            start.RedirectStandardOutput = true;
+            start.RedirectStandardError = true;
+            using (Process process = Process.Start(start))
+            {
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    string result = reader.ReadToEnd();
+                    var list = ReadCsvFile();
+                    var x = AddSimilaritiesToBooks(result, list);
+                    x = x.OrderBy(x => x.similarity).ToList();
+                    x.Reverse();
+                    foreach (var y in x)
+                    {
+                        bool read = false;
+                        foreach (var r in readBooks)
+                        {
+                            if (r.Book.Id == y.bk.Id)
+                            {
+                                read = true;
+                                break;
+                            }
+                        }
+                        if (!read)
+                        {
+                            recommendations.Add(y.bk);
+                            if (recommendations.Count >= 5)
+                                break;
+                        }
+                    }
+                }
+            }
             return recommendations;
         }
 
