@@ -6,7 +6,7 @@ import { globalContext } from '../reducers/GlobalStore';
 import BookListView from '../views/BookListView';
 import ReadBookListView from '../views/ReadBookListView';
 import RecommendedBookListView from '../views/RecommendedBookListView';
-import SimilarBookListView from '../views/SimilarBookListView copy';
+import SimilarBookListView from '../views/SimilarBookListView';
 
 export default function Books() {
   const { globalState } = useContext(globalContext);

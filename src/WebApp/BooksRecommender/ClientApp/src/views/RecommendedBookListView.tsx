@@ -26,7 +26,7 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
     function fetchData() {
         setLoading(true);
         let url = "/api/books/recommend/" + recommendType + "/" + globalState.loggedUser; 
-        fetch("url", {
+        fetch(url, {
             method: 'GET'
         })
             .then(response => {response.json(); console.log(response)})
