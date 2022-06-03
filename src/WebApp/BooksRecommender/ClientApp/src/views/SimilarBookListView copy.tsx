@@ -2,6 +2,7 @@ import {Typography} from "antd"
 import { LoadingOutlined } from '@ant-design/icons';
 
 import React, { useContext, useEffect, useState } from 'react';
+import { SmileOutlined } from '@ant-design/icons';
 import "antd/dist/antd.css";
 import { Row, Col } from "antd";
 import { globalContext } from "../reducers/GlobalStore";
@@ -18,6 +19,7 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
     const params = useParams();
     const [basedBookTitle, setBasedBookTitle] = useState("");
     const { globalState } = useContext(globalContext);
+    const [dataLoaded, setDataLoaded] = useState(false);
     const [books, setBooks] = useState<BookItem[]>();
     const [loading, setLoading] = useState(false);
 
@@ -47,6 +49,9 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
             .then(
                 (data) => {
                     console.log(data);
+                    if(data !== undefined) {
+                        setDataLoaded(true);
+                    }
                     //setBooks(data.books);
                     setLoading(false);
                 },
@@ -68,16 +73,21 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
                 <Col flex="auto">
                     <div className="site-layout-content2">
                     <Title>Books similar to {basedBookTitle}</Title>
-
-                        { !loading ? books?.map((item: BookItem) => (
-                                <BookListItem book={item} showSimilar={false}/>)
+                        { !loading ? 
+                            (dataLoaded ? 
+                                books?.map((item: BookItem) => (
+                                    <BookListItem book={item} showSimilar={false}/>)
+                                )
+                                :
+                                <Row align="middle" justify="center" style={{ marginTop: 50 }}>
+                                    <Title level={5} type="secondary">No books recommendations for you now, please check our book offer <SmileOutlined /></Title>
+                                </Row>
                             ) : 
                             <Col flex="auto">
                                 <Row align="middle" justify="center">
                                     <LoadingOutlined style={{ fontSize: '70px' }}/>
                                 </Row>
                             </Col>
-                            
                         }
                     </div> 
                     <br />          
