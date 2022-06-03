@@ -13,6 +13,7 @@ using System;
 using IronPython.Hosting;
 using System.IO;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace BooksRecommender.Services
 {
@@ -142,20 +143,20 @@ namespace BooksRecommender.Services
             foreach (var b in readBooks)
             {
                 books.Add(b.Book);
-                /*start.ArgumentList.Add((b.Book.Id).ToString());
+                /*start.ArgumentList.Add((b.Book.Id).ToString(CultureInfo.InvariantCulture));
                 start.ArgumentList.Add(b.Book.Title);
                 start.ArgumentList.Add(b.Book.Authors);
                 start.ArgumentList.Add(b.Book.Publisher);
                 start.ArgumentList.Add(b.Book.Genres);
                 start.ArgumentList.Add(b.Book.TargetGroups);
                 start.ArgumentList.Add(b.Book.Tags);
-                start.ArgumentList.Add((b.Book.NumPages).ToString());
+                start.ArgumentList.Add((b.Book.NumPages).ToString(CultureInfo.InvariantCulture));
                 start.ArgumentList.Add(b.Book.LanguageCode);
                 start.ArgumentList.Add(b.Book.Country);
-                start.ArgumentList.Add((b.Book.PublicationDate.Year).ToString());
-                start.ArgumentList.Add((b.Book.AvgRating).ToString());
-                start.ArgumentList.Add((b.Book.RatingsCount).ToString());
-                start.ArgumentList.Add((b.Book.MonthRentals).ToString());*/
+                start.ArgumentList.Add((b.Book.PublicationDate.Year).ToString(CultureInfo.InvariantCulture));
+                start.ArgumentList.Add((b.Book.AvgRating).ToString(CultureInfo.InvariantCulture));
+                start.ArgumentList.Add((b.Book.RatingsCount).ToString(CultureInfo.InvariantCulture));
+                start.ArgumentList.Add((b.Book.MonthRentals).ToString(CultureInfo.InvariantCulture));*/
             }
 
             avgBook = GetAverageBook(books);
@@ -172,8 +173,9 @@ namespace BooksRecommender.Services
         private List<Book> Recommend(List<Book> list, string email)
         {
             List<Book> recommendations = new List<Book>();
-            string exeFile = "C:\\Users\\48695\\AppData\\Local\\Programs\\Python\\Python310\\python.exe";
-            string pyFile = "C:\\Users\\48695\\Source\\Repos\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
+            //string exeFile = "C:\\Users\\Zosia\\AppData\\Local\\Microsoft\\WindowsApps\\python3.10.exe";
+            string exeFile = "C:\\Python310\\python.exe";
+            string pyFile = "E:\\Reposy\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
 
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = exeFile;
@@ -183,24 +185,24 @@ namespace BooksRecommender.Services
 
             foreach (var b in list)
             {
-                start.ArgumentList.Add((b.Id).ToString());
+                start.ArgumentList.Add((b.Id).ToString(CultureInfo.InvariantCulture));
                 start.ArgumentList.Add(b.Title);
                 start.ArgumentList.Add(b.Authors);
                 start.ArgumentList.Add(b.Publisher);
                 start.ArgumentList.Add(b.Genres);
                 start.ArgumentList.Add(b.TargetGroups);
                 start.ArgumentList.Add(b.Tags);
-                start.ArgumentList.Add((b.NumPages).ToString());
+                start.ArgumentList.Add((b.NumPages).ToString(CultureInfo.InvariantCulture));
                 start.ArgumentList.Add(b.LanguageCode);
                 start.ArgumentList.Add(b.Country);
-                start.ArgumentList.Add((b.PublicationDate.Year).ToString());
-                start.ArgumentList.Add((b.AvgRating).ToString());
-                start.ArgumentList.Add((b.RatingsCount).ToString());
-                start.ArgumentList.Add((b.MonthRentals).ToString());
+                start.ArgumentList.Add((b.PublicationDate.Year).ToString(CultureInfo.InvariantCulture));
+                start.ArgumentList.Add((b.AvgRating).ToString(CultureInfo.InvariantCulture));
+                start.ArgumentList.Add((b.RatingsCount).ToString(CultureInfo.InvariantCulture));
+                start.ArgumentList.Add((b.MonthRentals).ToString(CultureInfo.InvariantCulture));
             }
 
             start.UseShellExecute = false;
-            start.CreateNoWindow = true;
+            start.CreateNoWindow = false;
             start.RedirectStandardOutput = true;
             start.RedirectStandardError = true;
             using (Process process = Process.Start(start))
@@ -209,6 +211,9 @@ namespace BooksRecommender.Services
                 {
                     string result = reader.ReadToEnd();
                     var listAll = ReadCsvFile();
+
+                    Console.WriteLine(result);
+
                     var x = AddSimilaritiesToBooks(result, listAll);
                     x = x.OrderBy(x => x.similarity).ToList();
                     x.Reverse();
@@ -373,7 +378,7 @@ namespace BooksRecommender.Services
         {
             List<Book> result = new List<Book>();
             bool firstLine = true;
-            using (var reader = new StreamReader(@"C:\Users\48695\source\repos\python_c_test\python_c_test\PythonCode\books.csv"))
+            using (var reader = new StreamReader(@"E:\Reposy\books_rekomender\src\WebApp\BooksRecommender\PythonCode\books.csv"))
             {
                 while (!reader.EndOfStream)
                 {
@@ -391,25 +396,33 @@ namespace BooksRecommender.Services
 
                     if (!multiple)
                     {
-                        newBook.Id = Int32.Parse(values[0]);
-                        newBook.Title = values[1];
-                        newBook.Authors = values[2];
-                        newBook.Publisher = values[3];
-                        newBook.Genres = values[4];
-                        newBook.TargetGroups = values[5];
-                        newBook.Tags = values[6];
-                        newBook.NumPages = Int32.Parse(values[7]);
-                        newBook.LanguageCode = values[8];
-                        newBook.Country = values[9];
-                        newBook.PublicationDate = new DateTime(Int32.Parse(values[10]), 10, 10);
-                        newBook.AvgRating = Double.Parse(values[11]);
-                        newBook.RatingsCount = Int32.Parse(values[12]);
-                        newBook.MonthRentals = Int32.Parse(values[13]);
+                        try
+                        {
+                            newBook.Id = Int32.Parse(values[0], CultureInfo.InvariantCulture);
+                            newBook.Title = values[1];
+                            newBook.Authors = values[2];
+                            newBook.Publisher = values[3];
+                            newBook.Genres = values[4];
+                            newBook.TargetGroups = values[5];
+                            newBook.Tags = values[6];
+                            newBook.NumPages = Int32.Parse(values[7], CultureInfo.InvariantCulture);
+                            newBook.LanguageCode = values[8];
+                            newBook.Country = values[9];
+                            newBook.PublicationDate = new DateTime(Int32.Parse(values[10], CultureInfo.InvariantCulture), 10, 10);
+                            newBook.AvgRating = Double.Parse(values[11], CultureInfo.InvariantCulture);
+                            newBook.RatingsCount = Int32.Parse(values[12], CultureInfo.InvariantCulture);
+                            newBook.MonthRentals = Int32.Parse(values[13], CultureInfo.InvariantCulture);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        
                     }
                     else
                     {
                         int i = 0;
-                        newBook.Id = Int32.Parse(values[0]);
+                        newBook.Id = Int32.Parse(values[0], CultureInfo.InvariantCulture);
                         newBook.Title = values[1];
                         if (values[2].Contains("\"[") && !values[2].Contains(']'))
                         {
@@ -464,19 +477,19 @@ namespace BooksRecommender.Services
                             newBook.Tags = values[i];
                         }
                         i++;
-                        newBook.NumPages = Int32.Parse(values[i]);
+                        newBook.NumPages = Int32.Parse(values[i], CultureInfo.InvariantCulture);
                         i++;
                         newBook.LanguageCode = values[i];
                         i++;
                         newBook.Country = values[i];
                         i++;
-                        newBook.PublicationDate = new DateTime(Int32.Parse(values[i]), 10, 10);
+                        newBook.PublicationDate = new DateTime(Int32.Parse(values[i], CultureInfo.InvariantCulture), 10, 10);
                         i++;
-                        newBook.AvgRating = Double.Parse(values[i]);
+                        newBook.AvgRating = Double.Parse(values[i], CultureInfo.InvariantCulture);
                         i++;
-                        newBook.RatingsCount = Int32.Parse(values[i]);
+                        newBook.RatingsCount = Int32.Parse(values[i], CultureInfo.InvariantCulture);
                         i++;
-                        newBook.MonthRentals = Int32.Parse(values[i]);
+                        newBook.MonthRentals = Int32.Parse(values[i], CultureInfo.InvariantCulture);
                     }
 
                     result.Add(newBook);
@@ -491,15 +504,15 @@ namespace BooksRecommender.Services
             List<BookSim> result = new List<BookSim>();
             for (int i = 0; i < sims.Length; i++)
             {
-                double s;
                 if (sims[i].Contains('['))
                     sims[i] = sims[i].Substring(1);
                 if (sims[i].Contains(']'))
                     sims[i] = sims[i].Substring(0, sims[i].IndexOf(']'));
+
                 result.Add(new BookSim
                 {
                     bk = books[i],
-                    similarity = double.Parse(sims[i])
+                    similarity = Double.Parse(sims[i], CultureInfo.InvariantCulture)
                 });
             }
             return result;
@@ -642,7 +655,7 @@ namespace BooksRecommender.Services
             res = res.Substring(ind + 6);
             int offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
             ind = res.IndexOf("\r\n");
-            result.CsvId = Int32.Parse(res.Substring(offset, ind - offset));
+            result.CsvId = Int32.Parse(res.Substring(offset, ind - offset), CultureInfo.InvariantCulture);
             result.Id = result.CsvId;
 
             // title
@@ -693,7 +706,7 @@ namespace BooksRecommender.Services
             offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
             ind = res.IndexOf("\r\n");
             //var tmp = res.Substring(offset, ind - offset);
-            result.NumPages = (int)Double.Parse(res.Substring(offset, ind - offset));
+            result.NumPages = (int)Double.Parse(res.Substring(offset, ind - offset), CultureInfo.InvariantCulture);
 
             //language_code
             ind = res.IndexOf("language_code");
@@ -714,28 +727,28 @@ namespace BooksRecommender.Services
             res = res.Substring(ind + 17);
             offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
             ind = res.IndexOf("\r\n");
-            result.PublicationDate = new DateTime((int)Double.Parse(res.Substring(offset, ind - offset)), 10, 10);
+            result.PublicationDate = new DateTime((int)Double.Parse(res.Substring(offset, ind - offset), CultureInfo.InvariantCulture), 10, 10);
 
             //average_rating
             ind = res.IndexOf("average_rating");
             res = res.Substring(ind + 14);
             offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
             ind = res.IndexOf("\r\n");
-            result.AvgRating = Double.Parse(res.Substring(offset, ind - offset));
+            result.AvgRating = Double.Parse(res.Substring(offset, ind - offset), CultureInfo.InvariantCulture);
 
             //ratings_count
             ind = res.IndexOf("ratings_count");
             res = res.Substring(ind + 13);
             offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
             ind = res.IndexOf("\r\n");
-            result.RatingsCount = (int)Double.Parse(res.Substring(offset, ind - offset));
+            result.RatingsCount = (int)Double.Parse(res.Substring(offset, ind - offset), CultureInfo.InvariantCulture);
 
             //month_rentals
             ind = res.IndexOf("month_rentals");
             res = res.Substring(ind + 13);
             offset = res.TakeWhile(c => char.IsWhiteSpace(c)).Count();
             ind = res.IndexOf("\r\n");
-            result.MonthRentals = (int)Double.Parse(res.Substring(offset, ind - offset));
+            result.MonthRentals = (int)Double.Parse(res.Substring(offset, ind - offset), CultureInfo.InvariantCulture);
 
             return result;
         }

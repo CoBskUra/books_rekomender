@@ -13,7 +13,6 @@ const { Title } = Typography;
 const { Option } = Select;
 
 interface Props {
-
 }
 
 const RecommendedBookListView: React.FC<Props> = (props: Props) => {
@@ -29,15 +28,13 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
         fetch(url, {
             method: 'GET'
         })
-            .then(response => {response.json(); console.log(response)})
+            .then(response => response.json())
             .then(
                 (data) => {
                     if(data !== undefined) {
-                        console.log(data)
+                        setBooks(data);
                         setDataLoaded(true);
                     }
-                    else console.log("undefined");
-                    //setBooks(data.books);
                     setLoading(false);
                 },
                 (error) => {
@@ -60,27 +57,28 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
             <Row style={{ marginTop: 50 }}>
                 <Col flex="auto">
                     <div className="site-layout-content2">
-                    <Title>Recommended books for me</Title>
+                        <Title>Recommended books for me</Title>
 
-                    <Form.Item label="Recommend books based on" name="recommendBy">
-                        <Select
-                            placeholder="Favourites"
-                            onChange={onRecommendTypeHandler}
-                        >
-                            <Option value="favorites">Favourites</Option>
-                            <Option value="average">Average</Option>
-                        </Select>
-                    </Form.Item>
+                        <Form.Item label="Recommend books based on" name="recommendBy">
+                            <Select
+                                placeholder="Favourites"
+                                onChange={onRecommendTypeHandler}
+                            >
+                                <Option value="favorites">Favourites</Option>
+                                <Option value="average">Average</Option>
+                            </Select>
+                        </Form.Item>
 
                         { !loading ? 
-                            (dataLoaded ? 
-                                books?.map((item: BookItem) => (
-                                    <BookListItem book={item} showSimilar={false}/>)
-                                )
-                                :
-                                <Row align="middle" justify="center" style={{ marginTop: 50 }}>
-                                    <Title level={5} type="secondary">No books recommendations for you now, please check our book offer <SmileOutlined /></Title>
-                                </Row>
+                            (console.log(books)
+                            // (dataLoaded ? 
+                            //     books?.map((item: BookItem) => (
+                            //         <BookListItem book={item} showSimilar={false}/>)
+                            //     )
+                            //     :
+                            //     <Row align="middle" justify="center" style={{ marginTop: 50 }}>
+                            //         <Title level={5} type="secondary">No books recommendations for you now, please check our book offer <SmileOutlined /></Title>
+                            //     </Row>
                             ) : 
                             <Col flex="auto">
                                 <Row align="middle" justify="center">

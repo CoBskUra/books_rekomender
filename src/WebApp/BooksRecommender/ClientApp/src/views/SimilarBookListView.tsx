@@ -45,14 +45,13 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
         fetch(url, {
             method: 'GET'
         })
-            .then(response => {response.json(); console.log(response)})
+            .then(response => response.json())
             .then(
                 (data) => {
-                    console.log(data);
                     if(data !== undefined) {
+                        setBooks(data);
                         setDataLoaded(true);
                     }
-                    //setBooks(data.books);
                     setLoading(false);
                 },
                 (error) => {
