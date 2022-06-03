@@ -1,4 +1,4 @@
-import {Pagination, Typography} from "antd"
+import {Typography} from "antd"
 import { LoadingOutlined } from '@ant-design/icons';
 
 import React, { useContext, useEffect, useState } from 'react';
@@ -15,13 +15,11 @@ interface Props {
 }
 
 const ReadBookListView: React.FC<Props> = (props: Props) => {
-    const [_pageSize, setPageSize] = useState(5);
-    const [totalPages, setTotalPages] = useState<number>(1);
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState<BookItem[]>();
     const [loading, setLoading] = useState(false);
 
-    function fetchData(_pageNumber : number) {
+    function fetchData() {
         setLoading(true);
         let url = "/api/books/read/" + globalState.loggedUser;
         console.log(url);
@@ -32,7 +30,6 @@ const ReadBookListView: React.FC<Props> = (props: Props) => {
             .then(
                 (data) => {
                     setBooks(data.books);
-                    setTotalPages(data.numberOfPages);
                     setLoading(false);
                 },
                 (error) => {
@@ -40,12 +37,8 @@ const ReadBookListView: React.FC<Props> = (props: Props) => {
                 }
             )
     }
-    function changePageNumberHandler(pageNumber : number, pageSize: number) {
-        setPageSize(pageSize);
-        fetchData(pageNumber);
-    }
     useEffect(() => {
-        fetchData(1);
+        fetchData();
     }, [])
     return (
         <div>
@@ -64,8 +57,7 @@ const ReadBookListView: React.FC<Props> = (props: Props) => {
                             </Col>
                         }
                     </div> 
-                    <br />
-                    <Pagination onChange={changePageNumberHandler} pageSize={_pageSize} total={totalPages*_pageSize} />              
+                    <br />            
                 </Col>
             </Row>
         </div>

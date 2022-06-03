@@ -1,4 +1,4 @@
-import {Pagination, Typography} from "antd"
+import {Typography} from "antd"
 import { LoadingOutlined } from '@ant-design/icons';
 
 import React, { useContext, useEffect, useState } from 'react';
@@ -17,16 +17,10 @@ interface Props {
 const SimilarBookListView: React.FC<Props> = (props: Props) => {
     const params = useParams();
     const [basedBookTitle, setBasedBookTitle] = useState("");
-    const [_pageSize, setPageSize] = useState(5);
-    const [totalPages, setTotalPages] = useState<number>(1);
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState<BookItem[]>();
     const [loading, setLoading] = useState(false);
 
-    function changePageNumberHandler(pageNumber : number, pageSize: number) {
-        setPageSize(pageSize);
-        fetchData(pageNumber);
-    }
     function getBook() {
         let url = "/api/books/" + params.bookId;
         fetch(url, {
@@ -43,17 +37,17 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
                 }
             )
     }
-    function fetchData(_pageNumber : number) {
+    function fetchData() {
         setLoading(true);
         let url = "/api/books/recommend/basedOnBook/" + globalState.loggedUser + "/" + params.bookId; 
         fetch(url, {
             method: 'GET'
         })
-            .then(response => response.json())
+            .then(response => {response.json(); console.log(response)})
             .then(
                 (data) => {
-                    setBooks(data.books);
-                    setTotalPages(data.numberOfPages);
+                    console.log(data);
+                    //setBooks(data.books);
                     setLoading(false);
                 },
                 (error) => {
@@ -64,7 +58,7 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
 
     useEffect(() => {
         getBook();
-        fetchData(1);
+        fetchData();
     }, [])
 
 
@@ -86,8 +80,7 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
                             
                         }
                     </div> 
-                    <br />
-                    <Pagination onChange={changePageNumberHandler} pageSize={_pageSize} total={totalPages*_pageSize} />               
+                    <br />          
                 </Col>
             </Row>
         </div>

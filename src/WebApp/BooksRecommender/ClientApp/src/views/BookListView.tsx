@@ -117,7 +117,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
     return (
         <div>
             <Row style={{ marginTop: 50 }}>
-                <Col flex="400px">
+                <Col flex="300px">
                     <Card>
                         <Title level={2}><FilterOutlined /> Filter results</Title>
                         <BookListFilter filterResultsHandler={filterResultsHandler} />
