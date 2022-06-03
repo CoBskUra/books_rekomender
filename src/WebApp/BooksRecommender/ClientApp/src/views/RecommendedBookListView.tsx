@@ -54,7 +54,7 @@ const RecommendedBookListView: React.FC = () => {
         <div>
             <Row style={{ marginTop: 50 }}>
                 <Col flex="auto">
-                    <div className="site-layout-content2">
+                    <div className="site-layout-content">
                         <Title>Recommended books for me</Title>
 
                         <Form.Item label="Recommend books based on" name="recommendBy">

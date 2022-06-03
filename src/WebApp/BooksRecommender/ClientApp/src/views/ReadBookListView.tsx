@@ -45,7 +45,7 @@ const ReadBookListView: React.FC<Props> = (props: Props) => {
 
             <Row style={{ marginTop: 50 }}>
                 <Col flex="auto">
-                    <div className="site-layout-content2">
+                    <div className="site-layout-content">
                     <Title>My Read Books</Title>
                         { !loading ? books?.reverse().map((item: BookItem) => (
                                 <BookListItem book={item} showSimilar={true}/>)

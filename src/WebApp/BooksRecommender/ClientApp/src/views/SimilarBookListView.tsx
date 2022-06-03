@@ -67,7 +67,7 @@ const SimilarBookListView: React.FC = () => {
         <div>
             <Row style={{ marginTop: 50 }}>
                 <Col flex="auto">
-                    <div className="site-layout-content2">
+                    <div className="site-layout-content">
                     <Title>Books similar to {basedBookTitle}</Title>
                         { !loading ? 
                             (dataLoaded ? 
