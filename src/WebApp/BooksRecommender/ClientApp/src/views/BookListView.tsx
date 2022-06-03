@@ -9,6 +9,7 @@ import BookListItem from "./BookListItem";
 import { BookItem } from "../classes/BookItem";
 import BookListFilter from "./BookListFilter";
 import { emptyFilter } from "../classes/Filter";
+import useWindowDimensions from "../UseWindowDimensions"
 
 
 const { Title } = Typography;
@@ -26,6 +27,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
     let filter = emptyFilter;
     let _orderBy = "Rating";
     const [loading, setLoading] = useState(false);
+    const { height, width } = useWindowDimensions();
 
     function changePageNumberHandler(pageNumber : number, pageSize: number) {
         setPageSize(pageSize);
@@ -117,7 +119,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
     return (
         <div>
             <Row style={{ marginTop: 50 }}>
-                <Col flex="400px">
+                <Col flex={(width - 500)/4}>
                     <Card>
                         <Title level={2}><FilterOutlined /> Filter results</Title>
                         <BookListFilter filterResultsHandler={filterResultsHandler} />
@@ -126,7 +128,7 @@ const BookListView: React.FC<Props> = (props: Props) => {
 
                 <Col flex="20px" />
 
-                <Col flex="auto">
+                <Col flex={width - 500}>
                     <div className="site-layout-content">
                     <Title>Books</Title>
 

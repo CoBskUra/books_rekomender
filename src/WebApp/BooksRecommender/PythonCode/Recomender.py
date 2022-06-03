@@ -59,7 +59,7 @@ class recommending:
 
     def Recommend(user_read_books: pd.DataFrame):   
         # pobranie danych
-        library = pd.read_csv(r"C:\Users\48695\Source\Repos\books_rekomender\src\WebApp\BooksRecommender\PythonCode\books.csv")
+        library = pd.read_csv(r"E:\Reposy\books_rekomender\src\WebApp\BooksRecommender\PythonCode\books.csv")
         library["publication_date"] = library["publication_date"].apply(lambda x: math.floor(x / 10))
         # # usunięcie księżek przeczytanych
         #cond = library["bookID"].isin(user_read_books["bookID"])
