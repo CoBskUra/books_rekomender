@@ -24,9 +24,9 @@ namespace BooksRecommender.Services
         public Task<GetUserReadBooksResponse> GetUsersReadBooks(string uId);
         public Task<bool> SetBookAsRead(string email, int bId, double? rating);
         public Task<bool> UpdateUsersReadList(string emailuId, int bId);
-        public Task<List<Book>> RecommendFavorites(string email);
-        public Task<List<Book>> RecommendAverage(string email);
-        public Task<List<Book>> RecommendBasedOnBook(string uId, int bId);
+        public Task<List<MsgDisplayFilteredBook>> RecommendFavorites(string email);
+        public Task<List<MsgDisplayFilteredBook>> RecommendAverage(string email);
+        public Task<List<MsgDisplayFilteredBook>> RecommendBasedOnBook(string uId, int bId);
         public Task<bool> SetBookAsFavourite(string email, int bId);
         public Task<bool> UnsetBookAsFavourite(string email, int bId);
 
@@ -121,7 +121,7 @@ namespace BooksRecommender.Services
             _context.SaveChanges();
             return true;
         }
-        public async Task<List<Book>> RecommendFavorites(string email)
+        public async Task<List<MsgDisplayFilteredBook>> RecommendFavorites(string email)
         {
             var favoriteBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email && c.IsFavourite == true).ToList(); // serio na podstawie ulubionych
             var readBooks = _context.ReadBooks.Include("User").Include("Book").Where(c => c.User.Email == email).ToList();
@@ -132,7 +132,7 @@ namespace BooksRecommender.Services
                 books.Add(fb.Book);
             return Recommend(books, email);
         }
-        public async Task<List<Book>> RecommendAverage(string email)
+        public async Task<List<MsgDisplayFilteredBook>> RecommendAverage(string email)
         {
             Book avgBook = new Book();
 
@@ -162,7 +162,7 @@ namespace BooksRecommender.Services
             avgBook = GetAverageBook(books);
             return Recommend(new List<Book> { avgBook }, email);
         }
-        public async Task<List<Book>> RecommendBasedOnBook(string email, int bId)
+        public async Task<List<MsgDisplayFilteredBook>> RecommendBasedOnBook(string email, int bId)
         {
             Book bk = _context.Books.Where(b => b.CsvId == bId).First();
             List<Book> bkInList = new List<Book> { bk };
@@ -170,9 +170,9 @@ namespace BooksRecommender.Services
         }
 
 
-        private List<Book> Recommend(List<Book> list, string email)
+        private List<MsgDisplayFilteredBook> Recommend(List<Book> list, string email)
         {
-            List<Book> recommendations = new List<Book>();
+            List<MsgDisplayFilteredBook> recommendations = new List<MsgDisplayFilteredBook>();
             //string exeFile = "C:\\Users\\Zosia\\AppData\\Local\\Microsoft\\WindowsApps\\python3.10.exe";
             string exeFile = "C:\\Python310\\python.exe";
             string pyFile = "E:\\Reposy\\books_rekomender\\src\\WebApp\\BooksRecommender\\PythonCode\\Recomender.py";
@@ -230,7 +230,11 @@ namespace BooksRecommender.Services
                         }
                         if (!read)
                         {
-                            recommendations.Add(y.bk);
+                            var book = y.bk;
+                            var tmpbook = new Messages.Shared.MsgDisplayFilteredBook(book);
+                            tmpbook.readByUser = _context.ReadBooks.Where(c => c.Book.Id == book.Id).Where(c => c.User.Email == email).Count() > 0;
+
+                            recommendations.Add(tmpbook);
                             if (recommendations.Count >= 5)
                                 break;
                         }

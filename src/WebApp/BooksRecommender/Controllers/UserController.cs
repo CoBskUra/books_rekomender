@@ -9,6 +9,8 @@ using BooksRecommender.Messages.Responses;
 
 
 using BooksRecommender.Services;
+using BooksRecommender.Messages.Shared;
+
 namespace BooksRecommender.Controllers
 {
     [ApiController]
@@ -165,7 +167,7 @@ namespace BooksRecommender.Controllers
         [Route("recommend/favorites/{email}")]
         public async Task<IActionResult> GetRecommendationBasedOnFavorites([FromRoute]string email)
         {
-            List<Book> books = new List<Book>();
+            List<MsgDisplayFilteredBook> books = new List<MsgDisplayFilteredBook>();
             try
             {
                 books = await _userService.RecommendFavorites(email);
@@ -186,7 +188,7 @@ namespace BooksRecommender.Controllers
         [Route("recommend/average/{email}")]
         public async Task<IActionResult> GetRecommendationBasedOnAverage([FromRoute]string email)
         {
-            List<Book> books = new List<Book>();
+            List<MsgDisplayFilteredBook> books = new List<MsgDisplayFilteredBook>();
             try
             {
                 books = await _userService.RecommendAverage(email);
@@ -207,7 +209,7 @@ namespace BooksRecommender.Controllers
         [Route("recommend/basedOnBook/{email}/{bookId}")]
         public async Task<IActionResult> GetRecommendationBasedOnBook([FromRoute]string email, [FromRoute]int bookId)
         {
-            List<Book> books = new List<Book>();
+            List<MsgDisplayFilteredBook> books = new List<MsgDisplayFilteredBook>();
             try
             {
                 books = await _userService.RecommendBasedOnBook(email, bookId);

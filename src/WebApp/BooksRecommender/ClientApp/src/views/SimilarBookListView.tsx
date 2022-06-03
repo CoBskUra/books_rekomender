@@ -12,10 +12,8 @@ import { useParams } from "react-router-dom";
 
 const { Title } = Typography;
 
-interface Props {
-}
 
-const SimilarBookListView: React.FC<Props> = (props: Props) => {
+const SimilarBookListView: React.FC = () => {
     const params = useParams();
     const [basedBookTitle, setBasedBookTitle] = useState("");
     const { globalState } = useContext(globalContext);
@@ -32,7 +30,6 @@ const SimilarBookListView: React.FC<Props> = (props: Props) => {
             .then(
                 (data) => {
                     setBasedBookTitle(data.title);
-                    setLoading(false);
                 },
                 (error) => {
                     console.error(error);
