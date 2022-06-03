@@ -12,10 +12,8 @@ import { BookItem } from "../classes/BookItem";
 const { Title } = Typography;
 const { Option } = Select;
 
-interface Props {
-}
 
-const RecommendedBookListView: React.FC<Props> = (props: Props) => {
+const RecommendedBookListView: React.FC = () => {
     const { globalState } = useContext(globalContext);
     const [books, setBooks] = useState<BookItem[]>();
     const [dataLoaded, setDataLoaded] = useState(false);
@@ -70,15 +68,14 @@ const RecommendedBookListView: React.FC<Props> = (props: Props) => {
                         </Form.Item>
 
                         { !loading ? 
-                            (console.log(books)
-                            // (dataLoaded ? 
-                            //     books?.map((item: BookItem) => (
-                            //         <BookListItem book={item} showSimilar={false}/>)
-                            //     )
-                            //     :
-                            //     <Row align="middle" justify="center" style={{ marginTop: 50 }}>
-                            //         <Title level={5} type="secondary">No books recommendations for you now, please check our book offer <SmileOutlined /></Title>
-                            //     </Row>
+                            (dataLoaded ? 
+                                books?.map((item: BookItem) => (
+                                    <BookListItem book={item} showSimilar={false}/>)
+                                )
+                                :
+                                <Row align="middle" justify="center" style={{ marginTop: 50 }}>
+                                    <Title level={5} type="secondary">No books recommendations for you now, please check our book offer <SmileOutlined /></Title>
+                                </Row>
                             ) : 
                             <Col flex="auto">
                                 <Row align="middle" justify="center">
