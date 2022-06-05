@@ -57,6 +57,17 @@ const BookListItem: React.FC<Props> = (props: Props) => {
         var inv = 1.0 / step;
         return Math.round(value * inv) / inv;
     }
+    function prettifyString(text : string) {
+        return text
+            .replaceAll("[", "")
+            .replaceAll("]", "")
+            .replaceAll(new RegExp("['\"]", "g"), "")
+            .replaceAll("_", " ");
+    }
+    function getYearIfDatetime(date : string) {
+        let publicationYear = date.substring(0, props.book.publicationDate.indexOf('-'));
+        return publicationYear.length > 0 ? publicationYear : date;
+    }
 
     return (
        <div className="space-align-block">
@@ -65,33 +76,33 @@ const BookListItem: React.FC<Props> = (props: Props) => {
                     <Col>
                         <Row>
                             <span style={{ marginRight: 8 }}>Authors:</span>
-                            {props.book.authors?.map((author, i) => (<Text style={{ marginRight: 2 }}>{author}{i < (Number(props.book.authors?.length.valueOf()) - 1) ? "," : " "}</Text>))}
+                            {props.book.authors?.map((author, i) => (<Text style={{ marginRight: 2 }}>{ prettifyString(author) }{i < (Number(props.book.authors?.length.valueOf()) - 1) ? "," : " "}</Text>))}
                         </Row>
                         <Row>
-                            Publisher: { props.book.publisher }
+                            Publisher: { prettifyString(props.book.publisher) }
                         </Row>
                         <Row>
-                            Publication year: {props.book.publicationDate}
+                            Publication year: { getYearIfDatetime(props.book.publicationDate) }
                         </Row>
                         <Row>
                             <span style={{ marginRight: 8 }}>Genres:</span>
-                            {props.book.genres?.map((genre, i) => (<Text style={{ marginRight: 2 }}>{genre}{i < (Number(props.book.genres?.length.valueOf()) - 1) ? "," : " "}</Text>))}
+                            {props.book.genres?.map((genre, i) => (<Text style={{ marginRight: 2 }}>{ prettifyString(genre) }{i < (Number(props.book.genres?.length.valueOf()) - 1) ? "," : " "}</Text>))}
                         </Row>
                         <Row>
-                            Language: {props.book.languageCode}
+                            Language: { prettifyString(props.book.languageCode) }
                         </Row>
                         <Row>
-                            Number of pages: {props.book.numPages.toLocaleString()}
+                            Number of pages: { props.book.numPages.toLocaleString() }
                         </Row>
                         <Row>
-                            Country of origin: {props.book.country}
+                            Country of origin: { prettifyString(props.book.country) }
                         </Row>
                         <Row>
-                            Read this month: {props.book.monthRentals.toLocaleString()}
+                            Read this month: { props.book.monthRentals.toLocaleString() }
                         </Row>
                         <Row>
                             <Divider orientation="left" style={{ marginBottom: 7 , marginTop: 10 }}/>
-                            {props.book.tags?.map(tag => (<Tag>{tag}</Tag>))}
+                            {props.book.tags?.map(tag => (<Tag>{ prettifyString(tag) }</Tag>))}
                         </Row>
                     </Col>
 
