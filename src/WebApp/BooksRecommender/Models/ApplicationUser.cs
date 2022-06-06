@@ -8,5 +8,9 @@ namespace BooksRecommender.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser() : base()
+        {
+
+        }
     }
 }

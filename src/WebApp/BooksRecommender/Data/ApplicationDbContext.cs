@@ -19,6 +19,18 @@ namespace BooksRecommender.Data
         }
 
         public DbSet<Book> Books { get; set; }
-
+        public DbSet<ReadBook> ReadBooks { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            ApplicationUser user = new();
+            user.Email = "user@book.com";
+            user.UserName = "user@book.com";
+            user.EmailConfirmed = true;
+            user.PhoneNumberConfirmed = false;
+            user.LockoutEnabled = false;
+            user.AccessFailedCount = 0;
+            modelBuilder.Entity<ApplicationUser>().HasData(user);
+        }
     }
 }

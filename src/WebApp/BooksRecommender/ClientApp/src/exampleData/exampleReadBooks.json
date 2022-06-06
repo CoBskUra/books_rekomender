@@ -1,0 +1,36 @@
+[
+    {
+         "csvId": 1, "id": 2,
+        "title": "The Ultimate Hitchhiker's Guide to the Galaxy (Hitchhiker's Guide to the Galaxy  #1-5)",
+        "authors": ["Douglas Adams"],
+        "publisher": "Del Rey Books",
+        "genres": ["action_adventure", "graphic_novel", "biography"],
+        "targetGroups": "introverts",
+        "tags": ["collective_hero", "demons", "amnesia", "nordic_mythology", "aliens", "homonkulus", "nordic_mythology"],
+        "numPages": 248,
+        "languageCode": "english",
+        "country": "United Kingdom",
+        "publicationDate": "2002",
+        "avgRating": 4.38,
+        "ratingsCount": 249558,
+        "monthRentals": 19196,
+        "readByUser": true
+    },
+    {
+         "csvId": 1, "id": 3,
+        "title": "Uncommon Carriers",
+        "authors": ["John McPhee"],
+        "publisher": "Farrar Straus Giroux",
+        "genres": ["urban_fantasy"],
+        "targetGroups": "adults",
+        "tags": ["werewolves", "ghosts", "female_protagonist", "nordic_mythology", "the_chosen_one"],
+        "numPages": 652,
+        "languageCode": "english",
+        "country": "France",
+        "publicationDate": "2006",
+        "avgRating": 3.95,
+        "ratingsCount": 1630,
+        "monthRentals": 125,
+        "readByUser": true
+    }
+]
